@@ -31,13 +31,41 @@ describe('BookingSection', () => {
     render(<BookingSection content={siteContent} assetPath={assetPath} />)
 
     expect(screen.getByTitle('Интерактивная карта UNITY — Самара, улица Гагарина, 118')).toHaveAttribute('loading', 'lazy')
-    expect(screen.getByRole('link', { name: /открыть unity на яндекс картах/i })).toHaveAttribute('href', siteContent.contact.mapUrl)
+    expect(screen.getByRole('link', { name: /открыть маршрут в яндекс картах/i })).toHaveAttribute('href', siteContent.contact.mapUrl)
+    expect(screen.queryByText('Ориентир для входа')).not.toBeInTheDocument()
+    expect(screen.queryByText('Показать схему и ориентир')).not.toBeInTheDocument()
   })
 
   it('keeps the illustrated route fallback available without an embed URL', () => {
     render(<YandexMapEmbed embedUrl={undefined} mapUrl={siteContent.contact.mapUrl} mapLabel={siteContent.contact.mapLabel} />)
 
     expect(screen.queryByTitle('Интерактивная карта UNITY — Самара, улица Гагарина, 118')).not.toBeInTheDocument()
-    expect(screen.getByText('Показать схему и ориентир').closest('details')).toHaveAttribute('open')
+    expect(screen.getByText('Ориентир для входа')).toBeInTheDocument()
+    expect(screen.getByText('Самара, ул. Гагарина, 118')).toBeInTheDocument()
+  })
+
+  it('keeps one FAQ item open at a time with accessible state and animation classes', () => {
+    render(<BookingSection content={siteContent} assetPath={assetPath} />)
+
+    const firstQuestion = siteContent.booking.faq[0].question
+    const secondQuestion = siteContent.booking.faq[1].question
+    const firstTrigger = screen.getByRole('button', { name: firstQuestion })
+    const secondTrigger = screen.getByRole('button', { name: secondQuestion })
+    const firstPanel = document.getElementById(firstTrigger.getAttribute('aria-controls') ?? '')
+    const secondPanel = document.getElementById(secondTrigger.getAttribute('aria-controls') ?? '')
+
+    expect(firstTrigger).toHaveAttribute('aria-expanded', 'true')
+    expect(firstTrigger).toHaveClass('faq-accordion__trigger--open')
+    expect(firstPanel).toHaveClass('faq-accordion__panel--open')
+    expect(secondTrigger).toHaveAttribute('aria-expanded', 'false')
+
+    fireEvent.click(secondTrigger)
+    expect(firstTrigger).toHaveAttribute('aria-expanded', 'false')
+    expect(firstPanel).toHaveAttribute('aria-hidden', 'true')
+    expect(secondTrigger).toHaveAttribute('aria-expanded', 'true')
+    expect(secondPanel).toHaveClass('faq-accordion__panel--open')
+
+    fireEvent.click(secondTrigger)
+    expect(secondTrigger).toHaveAttribute('aria-expanded', 'false')
   })
 })

@@ -1,5 +1,5 @@
 import { ArrowRight, Heart } from '@phosphor-icons/react'
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState, type PointerEvent } from 'react'
 import { TicketEdge } from './TicketEdge'
 import { useCarouselAutoplay } from './motion/Carousel'
 import { useReveal } from './motion/Reveal'
@@ -11,9 +11,24 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
   const review = content.reviews[reviewIndex]
   const advanceReview = useCallback(() => setReviewIndex((current) => (current + 1) % content.reviews.length), [content.reviews.length])
   const autoplay = useCarouselAutoplay({ itemCount: content.reviews.length, onAdvance: advanceReview })
+  const pointerStart = useRef<{ x: number; y: number } | null>(null)
   const attributionLabel = (review.attribution as ReviewItem['attribution']) === 'excerpt'
     ? 'Выдержка из публичного отзыва'
     : 'Краткий пересказ публичного отзыва'
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    pointerStart.current = { x: event.clientX, y: event.clientY }
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+  const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    const start = pointerStart.current
+    pointerStart.current = null
+    if (!start) return
+    const deltaX = event.clientX - start.x
+    const deltaY = event.clientY - start.y
+    if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY)) return
+    setReviewIndex((current) => (current + (deltaX < 0 ? 1 : -1) + content.reviews.length) % content.reviews.length)
+  }
 
   return (
     <section ref={reveal.ref} className={`scene community-scene ${reveal.className}`} style={reveal.style} id="community-section" aria-labelledby="community-title">
@@ -45,6 +60,10 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           onBlur={(event) => {
             if (!event.currentTarget.contains(event.relatedTarget as Node | null)) autoplay.setFocused(false)
           }}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={() => { pointerStart.current = null }}
+          style={{ touchAction: 'pan-y' }}
         >
           <TicketEdge className="review-card">
             <div className="review-card__label"><Heart aria-hidden="true" /> что говорят гости</div>

@@ -98,7 +98,7 @@ export function Carousel({ items, assetPath }: CarouselProps) {
       }}
     >
       <div className="event-carousel__stage">
-        <AnimatePresence initial={false}>
+        <AnimatePresence initial={false} mode="sync">
           <motion.div
             key={active.id}
             className="event-feature"

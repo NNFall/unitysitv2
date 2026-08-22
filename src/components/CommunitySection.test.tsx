@@ -42,4 +42,22 @@ describe('CommunitySection', () => {
     expect(vkLink).toHaveAttribute('href', siteContent.social.vk.href)
     expect(vkLink).toHaveClass('button', 'button--primary')
   })
+
+  it('moves one review on a horizontal pointer swipe', () => {
+    render(<CommunitySection content={siteContent} assetPath={assetPath} />)
+    const region = screen.getByRole('region', { name: 'Отзывы гостей' })
+
+    const dispatchPointer = (type: 'pointerdown' | 'pointerup', clientX: number, clientY: number) => {
+      const event = new Event(type, { bubbles: true })
+      Object.defineProperties(event, { clientX: { value: clientX }, clientY: { value: clientY } })
+      region.dispatchEvent(event)
+    }
+
+    act(() => {
+      dispatchPointer('pointerdown', 320, 160)
+      dispatchPointer('pointerup', 220, 164)
+    })
+
+    expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
+  })
 })

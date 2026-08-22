@@ -13,6 +13,7 @@ export function BookingSection({ content, assetPath }: { content: SiteContent; a
   const [form, setForm] = useState(emptyForm)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(false)
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0)
   const update = (field: keyof FormState, value: string) => setForm((current) => ({ ...current, [field]: value }))
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -79,12 +80,38 @@ export function BookingSection({ content, assetPath }: { content: SiteContent; a
       <TicketEdge className="faq-card">
         <div className="faq-card__intro"><p className="eyebrow">часто спрашивают</p><h3>Перед визитом</h3></div>
         <div className="faq-list">
-          {content.booking.faq.map((item) => (
-            <details key={item.question}>
-              <summary>{item.question}<Plus aria-hidden="true" /></summary>
-              <p>{item.answer}</p>
-            </details>
-          ))}
+          {content.booking.faq.map((item, index) => {
+            const isOpen = openFaqIndex === index
+            const triggerId = `unity-faq-trigger-${index}`
+            const panelId = `unity-faq-panel-${index}`
+
+            return (
+              <div className={`faq-accordion${isOpen ? ' faq-accordion--open' : ''}`} key={item.question}>
+                <button
+                  id={triggerId}
+                  className={`faq-accordion__trigger ${isOpen ? 'faq-accordion__trigger--open' : ''}`.trim()}
+                  type="button"
+                  aria-expanded={isOpen}
+                  aria-controls={panelId}
+                  onClick={() => setOpenFaqIndex((current) => current === index ? null : index)}
+                >
+                  <span>{item.question}</span>
+                  <Plus aria-hidden="true" />
+                </button>
+                <div
+                  id={panelId}
+                  className={`faq-accordion__panel ${isOpen ? 'faq-accordion__panel--open' : ''}`.trim()}
+                  role="region"
+                  aria-labelledby={triggerId}
+                  aria-hidden={!isOpen}
+                >
+                  <div className="faq-accordion__panel-inner">
+                    <p>{item.answer}</p>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </TicketEdge>
     </section>

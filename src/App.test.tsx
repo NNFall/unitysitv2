@@ -35,4 +35,14 @@ describe('UNITY landing shell', () => {
     expect(screen.getByText('Как узнать актуальный график?')).toBeInTheDocument()
     expect(screen.getByText(/UNITY, Самара/)).toBeInTheDocument()
   })
+
+  it('labels the formats section with one clear promise', () => {
+    render(<App />)
+
+    expect(screen.getByRole('heading', { name: 'Форматы отдыха в UNITY' })).toBeInTheDocument()
+    expect(screen.queryByText('Что внутри UNITY')).not.toBeInTheDocument()
+    const formatRail = screen.getByRole('list', { name: 'Форматы отдыха в UNITY' })
+    expect(formatRail).toHaveAttribute('data-rail', 'formats')
+    expect(formatRail.querySelectorAll('[role="listitem"]')).toHaveLength(siteContent.formats.length)
+  })
 })

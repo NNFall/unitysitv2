@@ -12,15 +12,15 @@ export function FormatsSection({ content, assetPath }: { content: SiteContent; a
       <span id="inside" className="section-anchor" aria-hidden="true" />
       <span id="pricing" className="section-anchor" aria-hidden="true" />
       <div className="section-intro formats-intro">
-        <h2 id="formats-title"><span>Что внутри <em>UNITY</em></span><span>Форматы отдыха</span></h2>
+        <h2 id="formats-title"><span>Форматы отдыха <em>в UNITY</em></span></h2>
         <span className="section-wave" aria-hidden="true">≈≈≈</span>
         <p className="section-intro__copy">Выбирайте, как хочется провести время: играть, смотреть, говорить или просто быть рядом.</p>
       </div>
-      <div className="format-grid">
+      <div className="format-grid" role="list" aria-label="Форматы отдыха в UNITY" data-rail="formats">
         {content.formats.map((format, index) => {
           const Icon = formatIcons[index]
           return (
-            <article className={`format-card format-card--${index + 1}`} key={format.id}>
+            <article className={`format-card format-card--${index + 1}`} role="listitem" key={format.id}>
               <div className="format-card__media"><img src={assetPath(format.media.assetKey)} alt={format.media.alt} /><span>{format.number}</span></div>
               <div className="format-card__body">
                 <div className="format-card__heading"><p className="eyebrow">{format.kicker}</p><Icon aria-hidden="true" /></div>
