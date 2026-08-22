@@ -89,11 +89,11 @@ Run `npm run test:run`, `npm run build`, `npm audit --omit=dev --audit-level=hig
 
 Fresh-load local and public pages at `1920×1080`, `390×844`, and `320×844`; verify FAQ interaction, map CTA, swipe rails, burger overlay, no overflow, no console errors and no white carousel gap.
 
-- [ ] **Step 3: Commit and push**
+- [x] **Step 3: Commit and push**
 
 Create a focused UX polish commit and push `main`; verify `git ls-remote --heads origin main`.
 
-- [ ] **Step 4: Deploy and smoke-test**
+- [x] **Step 4: Deploy and smoke-test**
 
 Build `dist`, stage it on the server, preserve the previous release, run `nginx -t && systemctl reload nginx`, and verify public index, JS, CSS, hero PNG, no-slash redirect and Yandex iframe URL.
 
