@@ -1,0 +1,19 @@
+{
+  "generated": {
+    "paper-texture": {
+      "path": "/assets/paper-texture.png",
+      "kind": "generated-decoration",
+      "source": "OpenAI Image Generation Skill, 2026-08-22"
+    }
+  },
+  "venue": {
+    "unity-yandex-01": "/assets/venue/unity-yandex-01.jpg",
+    "unity-yandex-02": "/assets/venue/unity-yandex-02.jpg",
+    "unity-yandex-03": "/assets/venue/unity-yandex-03.jpg",
+    "unity-yandex-04": "/assets/venue/unity-yandex-04.jpg",
+    "unity-yandex-05": "/assets/venue/unity-yandex-05.jpg",
+    "unity-yandex-06": "/assets/venue/unity-yandex-06.jpg",
+    "unity-yandex-07": "/assets/venue/unity-yandex-07.jpg",
+    "unity-yandex-08": "/assets/venue/unity-yandex-08.jpg"
+  }
+}
