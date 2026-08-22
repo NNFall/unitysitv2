@@ -117,14 +117,14 @@ Run `npm run test:run`, `npm run build`, `npm audit --omit=dev --audit-level=hig
 
 Fresh-load at 1920×1080 (and the reference-sized CSS viewport), then 390×844 and 320×844. Check hero crop, ribbon text, VK contrast, live/fallback map, FAQ/footer, reveal timing, carousel controls, image completion, `scrollWidth`, anchors and console errors. Capture a fresh visual comparison note.
 
-- [ ] **Step 3: Commit and push**
+- [x] **Step 3: Commit and push**
 
 Create a focused commit for this iteration, push `main`, and verify `git ls-remote --heads origin main`.
 
-- [ ] **Step 4: Deploy and smoke-test**
+- [x] **Step 4: Deploy and smoke-test**
 
 Build the static artifact, upload it to `/root/unitysite`, preserve the previous remote directory/configuration if present, run `nginx -t && systemctl reload nginx` only after a successful test, and verify `https://kaigo.space/site/unity/` plus representative JS/CSS/PNG/JPG assets.
 
-- [ ] **Step 5: Update evidence and finish**
+- [x] **Step 5: Update evidence and finish**
 
 Record commit SHA, generated asset provenance, map mode, remote path, HTTP checks and rollback location. Mark the task complete only after the public URL and mobile checks pass.
