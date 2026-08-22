@@ -10,20 +10,22 @@ import { siteContent } from './data/siteContent'
 import './styles/tokens.css'
 import './styles/global.css'
 
+const assetRoot = `${import.meta.env.BASE_URL}assets`
+
 export const assetPath = (key: string) => ({
-  hero: '/assets/venue/unity-yandex-05.jpg',
-  entrance: '/assets/venue/unity-yandex-01.jpg',
-  'community-hero': '/assets/venue/unity-yandex-03.jpg',
-  'community-lounge': '/assets/venue/unity-yandex-05.jpg',
-  'community-screen': '/assets/venue/unity-yandex-08.jpg',
-  playstation: '/assets/venue/unity-yandex-03.jpg',
-  billiards: '/assets/venue/unity-yandex-05.jpg',
-  cinema: '/assets/venue/unity-yandex-08.jpg',
-  'board-games': '/assets/venue/unity-yandex-03.jpg',
-  'event-game-night': '/assets/venue/unity-yandex-03.jpg',
-  'event-movie-night': '/assets/venue/unity-yandex-08.jpg',
-  'event-board-game': '/assets/venue/unity-yandex-05.jpg',
-}[key] ?? '/assets/venue/unity-yandex-01.jpg')
+  hero: `${assetRoot}/venue/unity-yandex-05.jpg`,
+  entrance: `${assetRoot}/editorial/unity-ai-entrance-v2.png`,
+  'community-hero': `${assetRoot}/venue/unity-yandex-03.jpg`,
+  'community-lounge': `${assetRoot}/editorial/unity-ai-community-group-v2.png`,
+  'community-screen': `${assetRoot}/venue/unity-yandex-08.jpg`,
+  playstation: `${assetRoot}/editorial/unity-ai-gaming-v2.png`,
+  billiards: `${assetRoot}/editorial/unity-ai-billiards-v2.png`,
+  cinema: `${assetRoot}/editorial/unity-ai-cinema-v2.png`,
+  'board-games': `${assetRoot}/editorial/unity-ai-board-games-v2.png`,
+  'event-game-night': `${assetRoot}/editorial/unity-ai-event-gaming-v2.png`,
+  'event-movie-night': `${assetRoot}/editorial/unity-ai-event-movie-v2.png`,
+  'event-board-game': `${assetRoot}/editorial/unity-ai-event-board-v2.png`,
+}[key] ?? `${assetRoot}/venue/unity-yandex-01.jpg`)
 
 function App() {
   const content = useMemo(() => siteContent, [])

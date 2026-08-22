@@ -4,6 +4,51 @@
       "path": "/assets/paper-texture.png",
       "kind": "generated-decoration",
       "source": "OpenAI Image Generation Skill, 2026-08-22"
+    },
+    "unity-ai-gaming-v2": {
+      "path": "/assets/editorial/unity-ai-gaming-v2.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, generated 2026-08-22 from a neutral gaming brief"
+    },
+    "unity-ai-billiards-v2": {
+      "path": "/assets/editorial/unity-ai-billiards-v2.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, edited from public Yandex venue frame unity-yandex-05.jpg, 2026-08-22"
+    },
+    "unity-ai-cinema-v2": {
+      "path": "/assets/editorial/unity-ai-cinema-v2.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, edited from public Yandex venue frame unity-yandex-08.jpg, 2026-08-22"
+    },
+    "unity-ai-board-games-v2": {
+      "path": "/assets/editorial/unity-ai-board-games-v2.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, generated from a warm board-game scene brief, 2026-08-22"
+    },
+    "unity-ai-event-gaming-v2": {
+      "path": "/assets/editorial/unity-ai-event-gaming-v2.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, generated from a group gaming-night brief, 2026-08-22"
+    },
+    "unity-ai-event-movie-v2": {
+      "path": "/assets/editorial/unity-ai-event-movie-v2.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, generated from a movie-night brief, 2026-08-22"
+    },
+    "unity-ai-event-board-v2": {
+      "path": "/assets/editorial/unity-ai-event-board-v2.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, generated from a social board-game brief, 2026-08-22"
+    },
+    "unity-ai-community-group-v2": {
+      "path": "/assets/editorial/unity-ai-community-group-v2.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, generated from a relaxed community-lounge brief, 2026-08-22"
+    },
+    "unity-ai-entrance-v2": {
+      "path": "/assets/editorial/unity-ai-entrance-v2.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, edited from public Yandex venue frame unity-yandex-01.jpg, 2026-08-22"
     }
   },
   "venue": {

@@ -1,5 +1,4 @@
 import { DiceFive, GameController, Television, UsersThree } from '@phosphor-icons/react'
-import { SectionIntro } from './SectionIntro'
 import type { SiteContent } from '../data/siteContent'
 
 const formatIcons = [GameController, UsersThree, Television, DiceFive]
@@ -9,7 +8,11 @@ export function FormatsSection({ content, assetPath }: { content: SiteContent; a
     <section className="scene formats-scene" id="formats" aria-labelledby="formats-title">
       <span id="inside" className="section-anchor" aria-hidden="true" />
       <span id="pricing" className="section-anchor" aria-hidden="true" />
-      <SectionIntro eyebrow="что внутри UNITY" title="Форматы отдыха" accent="отдыха" copy="Выбирайте, как хочется провести время: играть, смотреть, говорить или просто быть рядом." id="formats-title" />
+      <div className="section-intro formats-intro">
+        <h2 id="formats-title"><span>Что внутри <em>UNITY</em></span><span>Форматы отдыха</span></h2>
+        <span className="section-wave" aria-hidden="true">≈≈≈</span>
+        <p className="section-intro__copy">Выбирайте, как хочется провести время: играть, смотреть, говорить или просто быть рядом.</p>
+      </div>
       <div className="format-grid">
         {content.formats.map((format, index) => {
           const Icon = formatIcons[index]

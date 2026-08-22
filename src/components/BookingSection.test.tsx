@@ -14,7 +14,8 @@ describe('BookingSection', () => {
     fireEvent.change(screen.getByPlaceholderText('Как к вам обращаться'), { target: { value: 'Сергей' } })
     fireEvent.change(screen.getByPlaceholderText('+7 или ссылка на VK'), { target: { value: '+79879500018' } })
     fireEvent.click(screen.getByRole('button', { name: siteContent.booking.form.submitLabel }))
-    expect(screen.getByRole('heading', { name: 'Запрос отправлен' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Демо-ответ' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /написать во вконтакте/i })).toHaveAttribute('href', siteContent.booking.vkCta.href)
   })
 
   it('offers a verified VK alternative and labels the form as a local demo', () => {

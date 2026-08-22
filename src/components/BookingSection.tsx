@@ -54,7 +54,7 @@ export function BookingSection({ content, assetPath }: { content: SiteContent; a
       </div>
       <TicketEdge tone="navy" className="booking-form-card">
         {submitted ? (
-          <div className="booking-success"><CheckCircle aria-hidden="true" /><h3>Запрос отправлен</h3><p>{content.booking.form.successMessage}</p><button type="button" onClick={() => { setSubmitted(false); setForm(emptyForm) }}>Отправить ещё один</button></div>
+          <div className="booking-success"><CheckCircle aria-hidden="true" /><h3>Демо-ответ</h3><p>{content.booking.form.successMessage}</p><a className="button button--secondary booking-success__vk" href={content.booking.vkCta.href} target="_blank" rel="noreferrer noopener">Написать во ВКонтакте <ArrowUpRight aria-hidden="true" /></a><button type="button" onClick={() => { setSubmitted(false); setForm(emptyForm) }}>Заполнить ещё раз</button></div>
         ) : (
           <form onSubmit={submit} noValidate>
             <p className="eyebrow">{content.booking.eyebrow}</p>
@@ -71,7 +71,7 @@ export function BookingSection({ content, assetPath }: { content: SiteContent; a
             <small className="form-note">{content.booking.privacyNote}</small>
             <div className="booking-form__alternative">
               <p className="form-demo-note">{content.booking.demoNote}</p>
-              <a className="button button--secondary" href={content.booking.vkCta.href} target="_blank" rel="noreferrer">
+              <a className="button button--secondary" href={content.booking.vkCta.href} target="_blank" rel="noreferrer noopener">
                 {content.booking.vkCta.label} <ArrowUpRight aria-hidden="true" />
               </a>
             </div>

@@ -154,10 +154,20 @@ const sourced = <T>(value: T, provenance: readonly Provenance[]): Sourced<T> => 
 
 const yandexFact = <T>(value: T): Sourced<T> => sourced(value, yandexOrgProvenance)
 
-const conceptMedia = (assetKey: string, alt: string): MediaReference => ({
+const generatedMediaProvenance: readonly Provenance[] = Object.freeze([
+  {
+    kind: 'editorial',
+    label: 'AI-assisted editorial image',
+    checkedAt: '2026-08-22',
+    verified: false,
+    note: 'Generated or edited for the landing; not documentary evidence of a specific venue moment.',
+  },
+])
+
+const generatedMedia = (assetKey: string, alt: string): MediaReference => ({
   assetKey,
   alt,
-  provenance: editorialProvenance,
+  provenance: generatedMediaProvenance,
 })
 
 export const siteContent = {
@@ -232,7 +242,7 @@ export const siteContent = {
       title: 'PlayStation',
       description: 'Большой экран, знакомая команда и матч, который хочется взять реваншем.',
       detail: 'Для дуэлей, кооператива и длинных игровых сессий.',
-      media: conceptMedia('playstation', 'Игровая зона UNITY с консолью и большим экраном'),
+      media: generatedMedia('playstation', 'AI-assisted editorial image of a warm UNITY-style gaming night'),
       cta: { label: 'Выбрать игру', href: '#booking', variant: 'text' },
       provenance: editorialProvenance,
     },
@@ -243,7 +253,7 @@ export const siteContent = {
       title: 'Бильярд',
       description: 'Партия без таймера: можно играть, разговаривать и не торопить финальный шар.',
       detail: 'Спокойный формат для вечера вдвоём или дружеского турнира.',
-      media: conceptMedia('billiards', 'Бильярдный стол в тёплом вечернем свете'),
+      media: generatedMedia('billiards', 'AI-assisted editorial image of a warm billiards night'),
       cta: { label: 'Забронировать стол', href: '#booking', variant: 'text' },
       provenance: yandexOrgProvenance,
     },
@@ -254,7 +264,7 @@ export const siteContent = {
       title: 'Кинозал',
       description: 'Выберите фильм, устройтесь удобнее и оставьте внешнему миру паузу.',
       detail: 'Для кинопросмотра, тематического вечера или личного саундтрека.',
-      media: conceptMedia('cinema', 'Камерный кинозал с мягкими креслами и экраном'),
+      media: generatedMedia('cinema', 'AI-assisted editorial image of a compact cinema room'),
       cta: { label: 'Собрать кинопросмотр', href: '#booking', variant: 'text' },
       provenance: editorialProvenance,
     },
@@ -265,7 +275,7 @@ export const siteContent = {
       title: 'Настольные игры',
       description: 'Колода на столе, несколько правил и разговор, который легко выходит за их пределы.',
       detail: 'Классика, быстрые партии и игры для большой компании.',
-      media: conceptMedia('board-games', 'Стол с настольными играми и тёплым светом'),
+      media: generatedMedia('board-games', 'AI-assisted editorial image of a board-game table'),
       cta: { label: 'Найти свой формат', href: '#booking', variant: 'text' },
       provenance: yandexOrgProvenance,
     },
@@ -279,7 +289,7 @@ export const siteContent = {
       dateLabel: 'афиша скоро',
       description: 'Соберите команду для дружеского турнира или оставьте вечер для свободной игры.',
       status: 'concept',
-      media: conceptMedia('event-game-night', 'Друзья играют вместе в вечернем пространстве UNITY'),
+      media: generatedMedia('event-game-night', 'AI-assisted editorial image of a gaming-night scenario'),
       cta: { label: 'Узнать о ближайшей дате', href: '#booking', variant: 'secondary' },
       provenance: editorialProvenance,
     },
@@ -290,7 +300,7 @@ export const siteContent = {
       dateLabel: 'афиша скоро',
       description: 'Один фильм, правильный свет и компания, с которой хочется досмотреть титры.',
       status: 'concept',
-      media: conceptMedia('event-movie-night', 'Экран и мягкий свет во время кинопросмотра в UNITY'),
+      media: generatedMedia('event-movie-night', 'AI-assisted editorial image of a movie-night scenario'),
       cta: { label: 'Предложить фильм', href: '#booking', variant: 'secondary' },
       provenance: editorialProvenance,
     },
@@ -301,7 +311,7 @@ export const siteContent = {
       dateLabel: 'афиша скоро',
       description: 'Настольная игра для тех, кто любит знакомиться, спорить о правилах и смеяться громче.',
       status: 'concept',
-      media: conceptMedia('event-board-game', 'Большая компания за столом с настольной игрой'),
+      media: generatedMedia('event-board-game', 'AI-assisted editorial image of a shared board-game table'),
       cta: { label: 'Собрать компанию', href: '#booking', variant: 'secondary' },
       provenance: editorialProvenance,
     },
@@ -350,7 +360,7 @@ export const siteContent = {
       yandexFact({ days: 'Вс', open: '16:00', close: '04:00', label: '16:00 — 04:00' }),
     ] satisfies readonly Sourced<OpeningHours>[],
     hoursNote: 'Время указано по публичной карточке; праздничный график лучше уточнить по телефону.',
-    mapUrl: sources.yandexGallery,
+    mapUrl: sources.yandexOrg,
     shortMapUrl: sources.yandexShortMap,
     mapLabel: 'Открыть Unity на Яндекс Картах',
   },
@@ -373,12 +383,12 @@ export const siteContent = {
       dateLabel: 'Когда планируете прийти?',
       guestsLabel: 'Сколько будет гостей?',
       submitLabel: 'Отправить запрос',
-      successMessage: 'Запрос принят — скоро свяжемся с вами.',
+      successMessage: 'Это демонстрационный ответ. Для настоящего бронирования напишите нам во ВКонтакте.',
       errorMessage: 'Проверьте имя и контакт, чтобы мы могли ответить.',
     },
     demoNote: 'Демо-форма: отправка пока не подключена к серверу. Для быстрого ответа напишите нам во ВКонтакте.',
     vkCta: { label: 'Забронировать во ВКонтакте', href: sources.vk, variant: 'secondary' },
-    privacyNote: 'Нажимая кнопку, вы соглашаетесь на обработку сообщения для связи по бронированию.',
+    privacyNote: 'Форма работает локально и пока не отправляет данные на сервер.',
     routeSteps: [
       { step: '01', title: 'Выйдите у метро «Советская»', detail: 'До UNITY — около 4 минут пешком.', provenance: yandexOrgProvenance },
       { step: '02', title: 'Идите по улице Гагарина', detail: 'Держитесь прямо примерно 250–300 метров.', provenance: yandexOrgProvenance },

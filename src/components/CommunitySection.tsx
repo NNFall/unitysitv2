@@ -1,6 +1,5 @@
 import { ArrowRight, Heart } from '@phosphor-icons/react'
 import { useCallback, useState } from 'react'
-import { SectionIntro } from './SectionIntro'
 import { TicketEdge } from './TicketEdge'
 import { useCarouselAutoplay } from './motion/Carousel'
 import type { ReviewItem, SiteContent } from '../data/siteContent'
@@ -23,7 +22,12 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
     <section className="scene community-scene" id="community-section" aria-labelledby="community-title">
       <span id="community" className="section-anchor" aria-hidden="true" />
       <div className="community__top">
-        <SectionIntro eyebrow="отзывы, атмосфера и сообщество" title="Место, куда хочется возвращаться" accent="возвращаться" copy="Здесь можно начать с игры, остаться на фильм и закончить разговором, который не хочется прерывать." id="community-title" />
+        <div className="section-intro community-intro">
+          <p className="eyebrow">отзывы, атмосфера и сообщество</p>
+          <h2 id="community-title"><span>Место, куда хочется</span><span><em>возвращаться</em> снова</span><span>и снова</span></h2>
+          <span className="section-wave" aria-hidden="true">≈≈≈</span>
+          <p className="section-intro__copy">Здесь можно начать с игры, остаться на фильм и закончить разговором, который не хочется прерывать.</p>
+        </div>
         <div className="community-mosaic">
           <img className="community-mosaic__hero" src={assetPath('community-hero')} alt="Живой кадр пространства UNITY" />
           <img src={assetPath('community-lounge')} alt="Мягкая зона отдыха UNITY" />
@@ -63,7 +67,7 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           <p className="eyebrow">наше сообщество</p>
           <h3>Вечера, которые складываются сами</h3>
           <p>Следите за новостями, живыми фото и ближайшими сценариями во ВКонтакте.</p>
-          <a href={content.social.vk.href} target="_blank" rel="noreferrer">Перейти во ВКонтакте <ArrowRight aria-hidden="true" /></a>
+          <a href={content.social.vk.href} target="_blank" rel="noreferrer noopener">Перейти во ВКонтакте <ArrowRight aria-hidden="true" /></a>
         </TicketEdge>
       </div>
     </section>

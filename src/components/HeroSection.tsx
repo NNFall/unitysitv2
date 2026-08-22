@@ -5,21 +5,16 @@ import { Reveal } from './motion/Reveal'
 import type { SiteContent } from '../data/siteContent'
 
 export function HeroSection({ content, assetPath }: { content: SiteContent['hero']; assetPath: (key: string) => string }) {
-  const titleParts = content.title.split(content.accentWord)
-
   return (
     <section className="hero scene" id="top" aria-labelledby="hero-title">
       <div className="hero__layout">
         <div className="hero__copy">
           <Reveal>
             <p className="eyebrow">{content.eyebrow}</p>
-            <h1 id="hero-title">
-              {titleParts.map((part, index) => (
-                <span key={`${part}-${index}`}>
-                  {part}
-                  {index < titleParts.length - 1 ? <em>{content.accentWord}</em> : null}
-                </span>
-              ))}
+            <h1 id="hero-title" aria-label={content.title}>
+              <span>Ваше место</span>
+              <span>для <em>{content.accentWord}</em>,</span>
+              <span>общения и игр</span>
             </h1>
             <span className="section-wave" aria-hidden="true">≈≈≈</span>
             <p className="hero__description">{content.description}</p>

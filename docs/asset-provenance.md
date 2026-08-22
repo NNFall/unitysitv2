@@ -23,6 +23,22 @@ Gallery source: `https://yandex.ru/maps/org/unity/223835723975/gallery/`
 
 `public/assets/paper-texture.png` was generated with the built-in Image Generation Skill as a subtle cream paper surface. It contains no venue-specific people, signage or claims and is used only as a background texture. It must not be presented as a real venue photograph.
 
+## AI-assisted editorial variants (second iteration)
+
+These files are intentionally labelled as editorial/AI-assisted imagery. They add visual variety to format, events and community cards; they are not documentary proof of a particular room, person or event. The real Yandex photos remain in the hero and community anchor positions; the address image is a clearly marked enhancement based on the real facade frame.
+
+| Local file | Input / prompt basis | Intended role | Safeguards |
+| --- | --- | --- | --- |
+| `public/assets/editorial/unity-ai-gaming-v2.png` | Neutral gaming-night brief | PlayStation format and gaming event | No readable game UI, logo, venue name or recognizable character. |
+| `public/assets/editorial/unity-ai-billiards-v2.png` | Edited from `unity-yandex-05.jpg` | Billiards format | Table geometry and mood retained; label as AI-assisted, not documentary. |
+| `public/assets/editorial/unity-ai-cinema-v2.png` | Edited from `unity-yandex-08.jpg` | Cinema format and movie event | Screen is abstract light only; no lyrics, performers, logos or readable text. |
+| `public/assets/editorial/unity-ai-board-games-v2.png` | Warm board-game scene brief | Board-games format and community lounge | No brand/game names or readable card text. |
+| `public/assets/editorial/unity-ai-event-gaming-v2.png` | Group gaming-night brief | Gaming-night event | Abstract screen only; no game IP, logo or readable text. |
+| `public/assets/editorial/unity-ai-event-movie-v2.png` | Movie-night brief | Movie-night event | Abstract projection only; no film IP, logo or readable text. |
+| `public/assets/editorial/unity-ai-event-board-v2.png` | Social board-game brief | Board-game event | Generic pieces and cards; no brand or readable game text. |
+| `public/assets/editorial/unity-ai-community-group-v2.png` | Relaxed lounge-community brief | Community mosaic | Editorial atmosphere, not a claim about a specific photographed visit. |
+| `public/assets/editorial/unity-ai-entrance-v2.png` | Edited from `unity-yandex-01.jpg` | Address/entrance image | Preserves the UNITY sign and Гагарина 118 marker; marked AI-assisted rather than documentary. |
+
 ## No background removal used
 
 No supplied asset benefited from a foreground cutout: the reference composition relies on full-bleed venue photographs, so `remove-background-local` was evaluated but not applied. This is intentional and recorded here instead of creating an artificial cutout.
