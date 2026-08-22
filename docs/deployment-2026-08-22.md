@@ -1,7 +1,7 @@
 # UNITY deployment evidence
 
 Дата: 2026-08-22  
-Commit: `5d122c8` (`feat: refine unity third iteration`)  
+Commit: `5d122c8` (`feat: refine unity third iteration`)
 Repository: `https://github.com/NNFall/unitysitv2.git`  
 Public URL: `https://kaigo.space/site/unity/`
 
