@@ -1,8 +1,9 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Carousel } from './Carousel'
-import { assetPath } from '../../App'
 import { siteContent } from '../../data/siteContent'
+
+const assetPath = (key: string) => `/assets/${key}.jpg`
 
 describe('Carousel', () => {
   afterEach(() => {
@@ -21,15 +22,11 @@ describe('Carousel', () => {
     vi.useFakeTimers()
     render(<Carousel items={siteContent.events} assetPath={assetPath} />)
 
-    expect(screen.getByText('Листайте сценарии')).toBeInTheDocument()
+    expect(screen.queryByText('Листайте сценарии')).not.toBeInTheDocument()
+    expect(screen.queryByText(/каждые 5,6 сек/i)).not.toBeInTheDocument()
     expect(screen.getByText(/Концепция · афиша скоро/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Поставить автопрокрутку на паузу' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /автопрокрутку/i })).not.toBeInTheDocument()
 
-    act(() => vi.advanceTimersByTime(5600))
-    expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
-
-    fireEvent.click(screen.getByRole('button', { name: 'Поставить автопрокрутку на паузу' }))
-    expect(screen.getByRole('button', { name: 'Возобновить автопрокрутку' })).toBeInTheDocument()
     act(() => vi.advanceTimersByTime(5600))
     expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
   })
@@ -45,6 +42,24 @@ describe('Carousel', () => {
 
     fireEvent.mouseLeave(region)
     act(() => vi.advanceTimersByTime(5600))
+    expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('moves one scenario on a horizontal pointer swipe', () => {
+    render(<Carousel items={siteContent.events} assetPath={assetPath} />)
+    const media = document.querySelector<HTMLDivElement>('.event-feature__media')
+    expect(media).not.toBeNull()
+
+    const dispatchPointer = (type: 'pointerdown' | 'pointerup', clientX: number, clientY: number) => {
+      const event = new Event(type, { bubbles: true })
+      Object.defineProperties(event, { clientX: { value: clientX }, clientY: { value: clientY } })
+      media!.dispatchEvent(event)
+    }
+    act(() => {
+      dispatchPointer('pointerdown', 320, 160)
+      dispatchPointer('pointerup', 220, 164)
+    })
+
     expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
   })
 })

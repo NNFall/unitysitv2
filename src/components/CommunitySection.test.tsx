@@ -1,8 +1,9 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { assetPath } from '../App'
 import { siteContent } from '../data/siteContent'
 import { CommunitySection } from './CommunitySection'
+
+const assetPath = (key: string) => `/assets/${key}.jpg`
 
 describe('CommunitySection', () => {
   beforeEach(() => {
@@ -21,18 +22,24 @@ describe('CommunitySection', () => {
     expect(screen.getByText(siteContent.reviews[0].dateLabel)).toBeInTheDocument()
     expect(screen.getByText(/редакционный пересказ|краткий пересказ/i)).toBeInTheDocument()
     expect(screen.queryByLabelText(/пять из пяти/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /автопрокрутку/i })).not.toBeInTheDocument()
   })
 
-  it('autoplays reviews and allows the visitor to pause it', () => {
+  it('autoplays reviews without exposing timing or autoplay controls', () => {
     render(<CommunitySection content={siteContent} assetPath={assetPath} />)
-    expect(screen.getByText('Листайте отзывы')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Поставить автопрокрутку на паузу' })).toBeInTheDocument()
+    expect(screen.queryByText('Листайте отзывы')).not.toBeInTheDocument()
+    expect(screen.queryByText(/каждые 5,6 сек/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /автопрокрутку/i })).not.toBeInTheDocument()
 
     act(() => vi.advanceTimersByTime(5600))
     expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
+  })
 
-    fireEvent.click(screen.getByRole('button', { name: 'Поставить автопрокрутку на паузу' }))
-    act(() => vi.advanceTimersByTime(5600))
-    expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
+  it('makes the verified VK destination a noticeable community action', () => {
+    render(<CommunitySection content={siteContent} assetPath={assetPath} />)
+
+    const vkLink = screen.getByRole('link', { name: /перейти во вконтакте/i })
+    expect(vkLink).toHaveAttribute('href', siteContent.social.vk.href)
+    expect(vkLink).toHaveClass('button', 'button--primary')
   })
 })

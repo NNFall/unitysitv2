@@ -14,11 +14,6 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
   const attributionLabel = (review.attribution as ReviewItem['attribution']) === 'excerpt'
     ? 'Выдержка из публичного отзыва'
     : 'Краткий пересказ публичного отзыва'
-  const autoplayLabel = autoplay.isReducedMotion
-    ? 'Автопрокрутка отключена'
-    : autoplay.isManuallyPaused
-      ? 'Возобновить автопрокрутку'
-      : 'Поставить автопрокрутку на паузу'
 
   return (
     <section ref={reveal.ref} className={`scene community-scene ${reveal.className}`} style={reveal.style} id="community-section" aria-labelledby="community-title">
@@ -42,7 +37,7 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           role="region"
           aria-roledescription="карусель"
           aria-label="Отзывы гостей"
-          aria-live={autoplay.isTemporarilyPaused || autoplay.isManuallyPaused || autoplay.isReducedMotion ? 'off' : 'polite'}
+          aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion ? 'off' : 'polite'}
           tabIndex={0}
           onMouseEnter={() => autoplay.setHovered(true)}
           onMouseLeave={() => autoplay.setHovered(false)}
@@ -51,7 +46,6 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
             if (!event.currentTarget.contains(event.relatedTarget as Node | null)) autoplay.setFocused(false)
           }}
         >
-          <p className="carousel-hint"><strong>Листайте отзывы</strong><span>автоматически · каждые 5,6 сек</span></p>
           <TicketEdge className="review-card">
             <div className="review-card__label"><Heart aria-hidden="true" /> что говорят гости</div>
             <div className="review-card__quote"><span className="quote-mark">“</span><p>{review.quote}</p></div>
@@ -61,7 +55,6 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
               <div className="review-card__dots">
                 {content.reviews.map((item, index) => <button type="button" className={index === reviewIndex ? 'is-active' : ''} aria-label={`Отзыв ${index + 1}`} aria-pressed={index === reviewIndex} key={item.id} onClick={() => setReviewIndex(index)} />)}
               </div>
-              <button className="review-autoplay-toggle" type="button" aria-pressed={autoplay.isManuallyPaused} disabled={autoplay.isReducedMotion} onClick={autoplay.togglePaused}>{autoplayLabel}</button>
             </div>
           </TicketEdge>
         </div>
@@ -69,7 +62,7 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           <p className="eyebrow">наше сообщество</p>
           <h3>Вечера, которые складываются сами</h3>
           <p>Следите за новостями, живыми фото и ближайшими сценариями во ВКонтакте.</p>
-          <a href={content.social.vk.href} target="_blank" rel="noreferrer noopener">Перейти во ВКонтакте <ArrowRight aria-hidden="true" /></a>
+          <a className="button button--primary community-panel__vk" href={content.social.vk.href} target="_blank" rel="noreferrer noopener">Перейти во ВКонтакте <ArrowRight aria-hidden="true" /></a>
         </TicketEdge>
       </div>
     </section>
