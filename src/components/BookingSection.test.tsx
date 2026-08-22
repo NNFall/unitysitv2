@@ -16,4 +16,12 @@ describe('BookingSection', () => {
     fireEvent.click(screen.getByRole('button', { name: siteContent.booking.form.submitLabel }))
     expect(screen.getByRole('heading', { name: 'Запрос отправлен' })).toBeInTheDocument()
   })
+
+  it('offers a verified VK alternative and labels the form as a local demo', () => {
+    render(<BookingSection content={siteContent} assetPath={assetPath} />)
+
+    const vkLink = screen.getByRole('link', { name: /вконтакте/i })
+    expect(vkLink).toHaveAttribute('href', siteContent.booking.vkCta.href)
+    expect(screen.getByText(siteContent.booking.demoNote)).toBeInTheDocument()
+  })
 })

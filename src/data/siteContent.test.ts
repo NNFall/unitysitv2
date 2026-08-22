@@ -18,7 +18,10 @@ describe('UNITY content contract', () => {
   it('contains at least three event cards and three attributed reviews', () => {
     expect(siteContent.events.length).toBeGreaterThanOrEqual(3)
     expect(siteContent.reviews.length).toBeGreaterThanOrEqual(3)
-    expect(siteContent.reviews.every(({ quote, provenance }) => quote.trim() && provenance.length > 0)).toBe(true)
+    expect(siteContent.events.every(({ status, dateLabel }) => status === 'concept' && dateLabel.trim())).toBe(true)
+    expect(siteContent.reviews.every(({ quote, author, dateLabel, attribution, provenance }) => (
+      quote.trim() && author.trim() && dateLabel.trim() && ['excerpt', 'summary'].includes(attribution) && provenance.length > 0
+    ))).toBe(true)
   })
 
   it('attaches source provenance to confirmed location and contact facts', () => {
@@ -39,5 +42,12 @@ describe('UNITY content contract', () => {
     expect(siteContent).not.toHaveProperty('rating')
     expect(siteContent).not.toHaveProperty('reviewCount')
     expect(siteContent.reviews.every((review) => !('rating' in review) && !('reviewCount' in review))).toBe(true)
+  })
+
+  it('keeps the VK booking alternative verified and marks the form as a local demo', () => {
+    expect(siteContent.booking.vkCta.href).toBe(sources.vk)
+    expect(siteContent.booking.vkCta.label).toMatch(/ВКонтакте/i)
+    expect(siteContent.booking.demoNote).toMatch(/демо/i)
+    expect(siteContent.booking.demoNote).toMatch(/сервер|backend/i)
   })
 })

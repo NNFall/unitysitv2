@@ -1,4 +1,4 @@
-import { CheckCircle, Clock, MapPin, Phone, Plus, Train } from '@phosphor-icons/react'
+import { ArrowUpRight, CheckCircle, Clock, MapPin, Phone, Plus, Train } from '@phosphor-icons/react'
 import { FormEvent, useState } from 'react'
 import { Button } from './Button'
 import { TicketEdge } from './TicketEdge'
@@ -69,6 +69,12 @@ export function BookingSection({ content, assetPath }: { content: SiteContent; a
             {error ? <p className="form-error" id="booking-error" role="alert">{content.booking.form.errorMessage}</p> : null}
             <button className="button button--primary" type="submit">{content.booking.form.submitLabel} <Plus aria-hidden="true" /></button>
             <small className="form-note">{content.booking.privacyNote}</small>
+            <div className="booking-form__alternative">
+              <p className="form-demo-note">{content.booking.demoNote}</p>
+              <a className="button button--secondary" href={content.booking.vkCta.href} target="_blank" rel="noreferrer">
+                {content.booking.vkCta.label} <ArrowUpRight aria-hidden="true" />
+              </a>
+            </div>
           </form>
         )}
       </TicketEdge>

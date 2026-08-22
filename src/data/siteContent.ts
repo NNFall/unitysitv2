@@ -376,6 +376,8 @@ export const siteContent = {
       successMessage: 'Запрос принят — скоро свяжемся с вами.',
       errorMessage: 'Проверьте имя и контакт, чтобы мы могли ответить.',
     },
+    demoNote: 'Демо-форма: отправка пока не подключена к серверу. Для быстрого ответа напишите нам во ВКонтакте.',
+    vkCta: { label: 'Забронировать во ВКонтакте', href: sources.vk, variant: 'secondary' },
     privacyNote: 'Нажимая кнопку, вы соглашаетесь на обработку сообщения для связи по бронированию.',
     routeSteps: [
       { step: '01', title: 'Выйдите у метро «Советская»', detail: 'До UNITY — около 4 минут пешком.', provenance: yandexOrgProvenance },

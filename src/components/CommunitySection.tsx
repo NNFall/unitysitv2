@@ -1,12 +1,23 @@
-import { ArrowRight, Heart, Star } from '@phosphor-icons/react'
-import { useState } from 'react'
+import { ArrowRight, Heart } from '@phosphor-icons/react'
+import { useCallback, useState } from 'react'
 import { SectionIntro } from './SectionIntro'
 import { TicketEdge } from './TicketEdge'
-import type { SiteContent } from '../data/siteContent'
+import { useCarouselAutoplay } from './motion/Carousel'
+import type { ReviewItem, SiteContent } from '../data/siteContent'
 
 export function CommunitySection({ content, assetPath }: { content: SiteContent; assetPath: (key: string) => string }) {
   const [reviewIndex, setReviewIndex] = useState(0)
   const review = content.reviews[reviewIndex]
+  const advanceReview = useCallback(() => setReviewIndex((current) => (current + 1) % content.reviews.length), [content.reviews.length])
+  const autoplay = useCarouselAutoplay({ itemCount: content.reviews.length, onAdvance: advanceReview })
+  const attributionLabel = (review.attribution as ReviewItem['attribution']) === 'excerpt'
+    ? 'Выдержка из публичного отзыва'
+    : 'Краткий пересказ публичного отзыва'
+  const autoplayLabel = autoplay.isReducedMotion
+    ? 'Автопрокрутка отключена'
+    : autoplay.isManuallyPaused
+      ? 'Возобновить автопрокрутку'
+      : 'Поставить автопрокрутку на паузу'
 
   return (
     <section className="scene community-scene" id="community-section" aria-labelledby="community-title">
@@ -20,12 +31,34 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
         </div>
       </div>
       <div className="community__bottom">
-        <TicketEdge className="review-card">
-          <div className="review-card__label"><Heart aria-hidden="true" /> что говорят гости</div>
-          <div className="review-card__quote"><span className="quote-mark">“</span><p>{review.quote}</p></div>
-          <div className="review-card__meta"><span><strong>{review.author}</strong><small>{review.dateLabel}</small></span><span className="review-stars" aria-label="Пять из пяти"><Star /><Star /><Star /><Star /><Star /></span></div>
-          <div className="review-card__controls">{content.reviews.map((item, index) => <button type="button" className={index === reviewIndex ? 'is-active' : ''} aria-label={`Отзыв ${index + 1}`} key={item.id} onClick={() => setReviewIndex(index)} />)}</div>
-        </TicketEdge>
+        <div
+          className="review-carousel"
+          role="region"
+          aria-roledescription="карусель"
+          aria-label="Отзывы гостей"
+          aria-live={autoplay.isTemporarilyPaused || autoplay.isManuallyPaused || autoplay.isReducedMotion ? 'off' : 'polite'}
+          tabIndex={0}
+          onMouseEnter={() => autoplay.setHovered(true)}
+          onMouseLeave={() => autoplay.setHovered(false)}
+          onFocus={() => autoplay.setFocused(true)}
+          onBlur={(event) => {
+            if (!event.currentTarget.contains(event.relatedTarget as Node | null)) autoplay.setFocused(false)
+          }}
+        >
+          <p className="carousel-hint"><strong>Листайте отзывы</strong><span>автоматически · каждые 5,6 сек</span></p>
+          <TicketEdge className="review-card">
+            <div className="review-card__label"><Heart aria-hidden="true" /> что говорят гости</div>
+            <div className="review-card__quote"><span className="quote-mark">“</span><p>{review.quote}</p></div>
+            <p className="review-card__attribution">{attributionLabel}</p>
+            <div className="review-card__meta"><span><strong className="review-card__author">{review.author}</strong><small className="review-card__date">{review.dateLabel}</small></span></div>
+            <div className="review-card__controls">
+              <div className="review-card__dots">
+                {content.reviews.map((item, index) => <button type="button" className={index === reviewIndex ? 'is-active' : ''} aria-label={`Отзыв ${index + 1}`} aria-pressed={index === reviewIndex} key={item.id} onClick={() => setReviewIndex(index)} />)}
+              </div>
+              <button className="review-autoplay-toggle" type="button" aria-pressed={autoplay.isManuallyPaused} disabled={autoplay.isReducedMotion} onClick={autoplay.togglePaused}>{autoplayLabel}</button>
+            </div>
+          </TicketEdge>
+        </div>
         <TicketEdge tone="navy" className="community-panel">
           <p className="eyebrow">наше сообщество</p>
           <h3>Вечера, которые складываются сами</h3>

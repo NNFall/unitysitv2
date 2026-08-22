@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight, CalendarBlank, Clock, UsersThree } from '@phosphor-icons/react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from 'framer-motion'
 import type { EventItem } from '../../data/siteContent'
 import { Button } from '../Button'
@@ -11,14 +11,88 @@ type CarouselProps = {
   assetPath: (key: string) => string
 }
 
+export const CAROUSEL_AUTOPLAY_INTERVAL = 5600
+
+type CarouselAutoplayOptions = {
+  itemCount: number
+  onAdvance: () => void
+  intervalMs?: number
+}
+
+type CarouselAutoplayState = {
+  isReducedMotion: boolean
+  isManuallyPaused: boolean
+  isTemporarilyPaused: boolean
+  setHovered: (value: boolean) => void
+  setFocused: (value: boolean) => void
+  togglePaused: () => void
+}
+
+/** Shared autoplay behavior for editorial carousels with accessible escape hatches. */
+export function useCarouselAutoplay({
+  itemCount,
+  onAdvance,
+  intervalMs = CAROUSEL_AUTOPLAY_INTERVAL,
+}: CarouselAutoplayOptions): CarouselAutoplayState {
+  const prefersReducedMotion = useReducedMotion()
+  const [isManuallyPaused, setIsManuallyPaused] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  const [isFocused, setIsFocused] = useState(false)
+  const onAdvanceRef = useRef(onAdvance)
+
+  useEffect(() => {
+    onAdvanceRef.current = onAdvance
+  }, [onAdvance])
+
+  useEffect(() => {
+    if (prefersReducedMotion || isManuallyPaused || isHovered || isFocused || itemCount < 2) return
+
+    const timer = window.setInterval(() => onAdvanceRef.current(), intervalMs)
+    return () => window.clearInterval(timer)
+  }, [intervalMs, isFocused, isHovered, isManuallyPaused, itemCount, prefersReducedMotion])
+
+  return {
+    isReducedMotion: Boolean(prefersReducedMotion),
+    isManuallyPaused,
+    isTemporarilyPaused: isHovered || isFocused,
+    setHovered: setIsHovered,
+    setFocused: setIsFocused,
+    togglePaused: () => setIsManuallyPaused((paused) => !paused),
+  }
+}
+
 export function Carousel({ items, assetPath }: CarouselProps) {
   const [index, setIndex] = useState(0)
   const prefersReducedMotion = useReducedMotion()
   const active = items[index]
   const go = (direction: number) => setIndex((current) => (current + direction + items.length) % items.length)
+  const autoplay = useCarouselAutoplay({ itemCount: items.length, onAdvance: () => go(1) })
+
+  if (!active) return null
+
+  const statusLabel = active.status === 'concept' ? 'Концепция' : 'Опубликовано'
+  const autoplayLabel = autoplay.isReducedMotion
+    ? 'Автопрокрутка отключена'
+    : autoplay.isManuallyPaused
+      ? 'Возобновить автопрокрутку'
+      : 'Поставить автопрокрутку на паузу'
 
   return (
-    <div className="event-carousel" role="region" aria-roledescription="карусель" aria-label="Сценарии вечера">
+    <div
+      className="event-carousel"
+      role="region"
+      aria-roledescription="карусель"
+      aria-label="Сценарии вечера"
+      aria-live={autoplay.isTemporarilyPaused || autoplay.isManuallyPaused || autoplay.isReducedMotion ? 'off' : 'polite'}
+      tabIndex={0}
+      onMouseEnter={() => autoplay.setHovered(true)}
+      onMouseLeave={() => autoplay.setHovered(false)}
+      onFocus={() => autoplay.setFocused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) autoplay.setFocused(false)
+      }}
+    >
+      <p className="carousel-hint"><strong>Листайте сценарии</strong><span>автоматически · каждые 5,6 сек</span></p>
       <div className="event-carousel__stage">
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -34,6 +108,7 @@ export function Carousel({ items, assetPath }: CarouselProps) {
           >
             <div className="event-feature__copy">
               <p className="eyebrow">{active.category}</p>
+              <p className="event-feature__status" aria-label={`${statusLabel}, ${active.dateLabel}`}>{statusLabel} · {active.dateLabel}</p>
               <h3>{active.title}</h3>
               <p>{active.description}</p>
               <div className="event-feature__meta">
@@ -58,6 +133,7 @@ export function Carousel({ items, assetPath }: CarouselProps) {
           <button type="button" aria-label="Предыдущее событие" onClick={() => go(-1)}><ArrowLeft aria-hidden="true" /></button>
           <button type="button" aria-label="Следующее событие" onClick={() => go(1)}><ArrowRight aria-hidden="true" /></button>
         </div>
+        <button className="carousel-autoplay-toggle" type="button" aria-pressed={autoplay.isManuallyPaused} disabled={autoplay.isReducedMotion} onClick={autoplay.togglePaused}>{autoplayLabel}</button>
       </div>
       <div className="event-tickets">
         {items.filter((_, itemIndex) => itemIndex !== index).map((item) => (
