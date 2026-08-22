@@ -73,9 +73,9 @@
 - Modify: `src/components/BookingSection.tsx`, `src/styles/global.css`, `docs/visual-deviations.md`
 - Create if needed: `deploy/kaigo-unity.conf.example` (no secrets)
 
-- [ ] Probe the public Yandex map URL and decide whether a safe embed is possible; otherwise retain the illustrated fallback.
-- [ ] Run `npm run build` and `npm audit --omit=dev --audit-level=high`.
-- [ ] Check the exact output files under `dist/` and prepare a static deployment package.
+- [x] Probe the public Yandex map URL and retain the illustrated fallback with a verified organisation link.
+- [x] Run `npm run build` and `npm audit --omit=dev --audit-level=high`.
+- [x] Check the exact output files under `dist/` and prepare a static deployment package.
 
 ### Task 7: SSH deploy and production verification
 
@@ -83,15 +83,15 @@
 - Remote target: `/root/unitysite`
 - Local evidence: `docs/deployment-2026-08-22.md`
 
-- [ ] Connect interactively to `root@5.129.236.90:22` without writing the password to disk or command history.
-- [ ] Inspect existing web-server ownership/configuration before replacing files.
-- [ ] Copy the production artifact to `/root/unitysite`, preserving a timestamped rollback copy when present.
-- [ ] Verify `https://kaigo.space/site/unity` returns 200 and assets resolve from the path prefix.
-- [ ] Record remote path, timestamp, commit SHA, HTTP status, and rollback location.
+- [x] Connect interactively to `root@5.129.236.90:22` without writing the password to disk or command history.
+- [x] Inspect existing web-server ownership/configuration before replacing files.
+- [x] Copy the production artifact to `/root/unitysite`, preserving a timestamped rollback copy when present.
+- [x] Verify `https://kaigo.space/site/unity` returns 200 and assets resolve from the path prefix.
+- [x] Record remote path, timestamp, commit SHA, HTTP status, and rollback location.
 
 ### Task 8: Final review, commit, and push
 
-- [ ] Run the complete test/build/audit/browser checklist after the final edits.
-- [ ] Request independent code and visual reviews; resolve P0/P1 findings.
-- [ ] Commit the iteration, push `main`, and verify `git ls-remote --heads origin main`.
-- [ ] Update the goal only after local and remote evidence are complete.
+- [x] Run the complete test/build/audit/browser checklist after the final edits.
+- [x] Request independent code and visual reviews; resolve P0/P1 findings.
+- [x] Commit the iteration, push `main`, and verify `git ls-remote --heads origin main`.
+- [x] Update the goal only after local and remote evidence are complete.
