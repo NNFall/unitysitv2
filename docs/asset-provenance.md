@@ -14,7 +14,7 @@ Gallery source: `https://yandex.ru/maps/org/unity/223835723975/gallery/`
 | `public/assets/venue/unity-yandex-02.jpg` | `https://avatars.mds.yandex.net/get-altay/7370029/2a00000182fd3980dda1dc92e8473bec9deb/XXL_height` | Hero alternate / atmosphere | Night facade with orange UNITY sign. |
 | `public/assets/venue/unity-yandex-03.jpg` | `https://avatars.mds.yandex.net/get-altay/2390040/2a00000176ed9266b972f5d209f1eab3ffd7/XXL_height` | Formats / gaming | Real seating, console screen and hookah room. |
 | `public/assets/venue/unity-yandex-04.jpg` | `https://avatars.mds.yandex.net/get-altay/17043127/2a00000198fc5c62c4e919a1d63f6e2c88d7/XXL_height` | Contacts exterior | Wide daytime facade and parking context. |
-| `public/assets/venue/unity-yandex-05.jpg` | `https://avatars.mds.yandex.net/get-altay/3915926/2a0000017579d75bd79c1c197f523da3528d/XXL_height` | Hero / formats / billiards | Real billiards table and players; used as the hero because it matches the reference's warm interior-and-table composition. |
+| `public/assets/venue/unity-yandex-05.jpg` | `https://avatars.mds.yandex.net/get-altay/3915926/2a0000017579d75bd79c1c197f523da3528d/XXL_height` | Billiards format source | Real billiards table and players; retained as a documentary source for the edited billiards card, while the third-iteration hero uses a separate editorial composition. |
 | `public/assets/venue/unity-yandex-06.jpg` | `https://avatars.mds.yandex.net/get-altay/17637863/2a0000019d86cb75efcca4cd7e7e658bfc0e/XXL_height` | Community / seating | Real lounge seating. |
 | `public/assets/venue/unity-yandex-07.jpg` | `https://avatars.mds.yandex.net/get-altay/11124269/2a00000191f110a66e9736b08631bd1f8487/XXL_height` | Contacts detail | Entrance detail with orange masonry. |
 | `public/assets/venue/unity-yandex-08.jpg` | `https://avatars.mds.yandex.net/get-altay/11937221/2a00000190bc3717bafbc3e4537e7cc788a5/XXL_height` | Formats / cinema | Real projection room. |
@@ -26,6 +26,10 @@ Gallery source: `https://yandex.ru/maps/org/unity/223835723975/gallery/`
 ## AI-assisted editorial variants (second iteration)
 
 These files are intentionally labelled as editorial/AI-assisted imagery. They add visual variety to format, events and community cards; they are not documentary proof of a particular room, person or event. The real Yandex photos remain in the hero and community anchor positions; the address image is a clearly marked enhancement based on the real facade frame.
+
+## AI-assisted editorial hero (third iteration)
+
+`public/assets/editorial/unity-ai-hero-billiards-v3.png` is a new photorealistic editorial composition generated for the first screen. The billiards table intentionally dominates the foreground while PlayStation, cinema and board-game activity reads in the background. It contains no readable venue signage or brand claims and must be labelled AI-assisted, not documentary.
 
 | Local file | Input / prompt basis | Intended role | Safeguards |
 | --- | --- | --- | --- |

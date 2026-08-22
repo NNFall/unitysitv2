@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { BookingSection } from './BookingSection'
+import { YandexMapEmbed } from './YandexMapEmbed'
 import { assetPath } from '../App'
 import { siteContent } from '../data/siteContent'
 
@@ -24,5 +25,19 @@ describe('BookingSection', () => {
     const vkLink = screen.getByRole('link', { name: /вконтакте/i })
     expect(vkLink).toHaveAttribute('href', siteContent.booking.vkCta.href)
     expect(screen.getByText(siteContent.booking.demoNote)).toBeInTheDocument()
+  })
+
+  it('renders a lazy Yandex map widget with an accessible title and direct fallback link', () => {
+    render(<BookingSection content={siteContent} assetPath={assetPath} />)
+
+    expect(screen.getByTitle('Интерактивная карта UNITY — Самара, улица Гагарина, 118')).toHaveAttribute('loading', 'lazy')
+    expect(screen.getByRole('link', { name: /открыть unity на яндекс картах/i })).toHaveAttribute('href', siteContent.contact.mapUrl)
+  })
+
+  it('keeps the illustrated route fallback available without an embed URL', () => {
+    render(<YandexMapEmbed embedUrl={undefined} mapUrl={siteContent.contact.mapUrl} mapLabel={siteContent.contact.mapLabel} />)
+
+    expect(screen.queryByTitle('Интерактивная карта UNITY — Самара, улица Гагарина, 118')).not.toBeInTheDocument()
+    expect(screen.getByText('Показать схему и ориентир').closest('details')).toHaveAttribute('open')
   })
 })

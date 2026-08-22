@@ -1,11 +1,14 @@
 import { DiceFive, GameController, Television, UsersThree } from '@phosphor-icons/react'
 import type { SiteContent } from '../data/siteContent'
+import { useReveal } from './motion/Reveal'
 
 const formatIcons = [GameController, UsersThree, Television, DiceFive]
 
 export function FormatsSection({ content, assetPath }: { content: SiteContent; assetPath: (key: string) => string }) {
+  const reveal = useReveal({ delay: 80 })
+
   return (
-    <section className="scene formats-scene" id="formats" aria-labelledby="formats-title">
+    <section ref={reveal.ref} className={`scene formats-scene ${reveal.className}`} style={reveal.style} id="formats" aria-labelledby="formats-title">
       <span id="inside" className="section-anchor" aria-hidden="true" />
       <span id="pricing" className="section-anchor" aria-hidden="true" />
       <div className="section-intro formats-intro">

@@ -2,9 +2,11 @@ import { ArrowRight, Heart } from '@phosphor-icons/react'
 import { useCallback, useState } from 'react'
 import { TicketEdge } from './TicketEdge'
 import { useCarouselAutoplay } from './motion/Carousel'
+import { useReveal } from './motion/Reveal'
 import type { ReviewItem, SiteContent } from '../data/siteContent'
 
 export function CommunitySection({ content, assetPath }: { content: SiteContent; assetPath: (key: string) => string }) {
+  const reveal = useReveal({ delay: 160 })
   const [reviewIndex, setReviewIndex] = useState(0)
   const review = content.reviews[reviewIndex]
   const advanceReview = useCallback(() => setReviewIndex((current) => (current + 1) % content.reviews.length), [content.reviews.length])
@@ -19,7 +21,7 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
       : 'Поставить автопрокрутку на паузу'
 
   return (
-    <section className="scene community-scene" id="community-section" aria-labelledby="community-title">
+    <section ref={reveal.ref} className={`scene community-scene ${reveal.className}`} style={reveal.style} id="community-section" aria-labelledby="community-title">
       <span id="community" className="section-anchor" aria-hidden="true" />
       <div className="community__top">
         <div className="section-intro community-intro">

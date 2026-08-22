@@ -13,6 +13,8 @@ export const sources = {
     'https://yandex.ru/maps/51/samara/?ll=50.218803%2C53.203706&mode=poi&poi%5Bpoint%5D=50.218693%2C53.203295&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D223835723975&tab=gallery&z=17',
   yandexShortMap: 'https://yandex.ru/maps/-/CTs~bMp~',
   yandexOrg: 'https://yandex.ru/maps/org/unity/223835723975/',
+  yandexMapEmbed:
+    'https://yandex.ru/map-widget/v1/?ll=50.218693%2C53.203295&mode=search&oid=223835723975&ol=biz&z=17&lang=ru_RU',
   directoryReview: 'https://samara.jsprav.ru/igrovyie-klubyi/unity-club/',
 } as const
 
@@ -361,6 +363,7 @@ export const siteContent = {
     ] satisfies readonly Sourced<OpeningHours>[],
     hoursNote: 'Время указано по публичной карточке; праздничный график лучше уточнить по телефону.',
     mapUrl: sources.yandexOrg,
+    mapEmbedUrl: sources.yandexMapEmbed,
     shortMapUrl: sources.yandexShortMap,
     mapLabel: 'Открыть Unity на Яндекс Картах',
   },
@@ -398,6 +401,9 @@ export const siteContent = {
       { question: 'Нужно ли бронировать стол заранее?', answer: 'Лучше написать заранее — мы проверим свободные места и подскажем подходящий формат.', provenance: editorialProvenance },
       { question: 'Можно ли прийти со своей едой?', answer: 'Условия зависят от формата вечера. Уточните их при бронировании, чтобы мы всё подготовили.', provenance: editorialProvenance },
       { question: 'Есть ли формат для большой компании?', answer: 'Да, опишите размер компании в заявке — предложим свободную зону и сценарий вечера.', provenance: editorialProvenance },
+      { question: 'Можно ли забронировать отдельную зону?', answer: 'Напишите состав компании и желаемый сценарий — команда подскажет, какая зона будет удобнее и что доступно в этот день.', provenance: editorialProvenance },
+      { question: 'Как оплачивается визит?', answer: 'Точную стоимость, правила оплаты и актуальные условия лучше уточнить перед визитом во ВКонтакте или по телефону.', provenance: editorialProvenance },
+      { question: 'Что взять с собой?', answer: 'Только хорошее настроение. Если планируете особенный вечер или большую компанию, заранее расскажите об этом — мы подскажем детали.', provenance: editorialProvenance },
       { question: 'Как узнать актуальный график?', answer: 'Праздничные часы могут меняться. Самый точный способ — позвонить по номеру в контактах.', provenance: yandexOrgProvenance },
     ],
   },

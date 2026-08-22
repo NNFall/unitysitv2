@@ -13,7 +13,7 @@ import './styles/global.css'
 const assetRoot = `${import.meta.env.BASE_URL}assets`
 
 export const assetPath = (key: string) => ({
-  hero: `${assetRoot}/venue/unity-yandex-05.jpg`,
+  hero: `${assetRoot}/editorial/unity-ai-hero-billiards-v3.png`,
   entrance: `${assetRoot}/editorial/unity-ai-entrance-v2.png`,
   'community-hero': `${assetRoot}/venue/unity-yandex-03.jpg`,
   'community-lounge': `${assetRoot}/editorial/unity-ai-community-group-v2.png`,

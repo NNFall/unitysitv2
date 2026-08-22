@@ -5,6 +5,11 @@
       "kind": "generated-decoration",
       "source": "OpenAI Image Generation Skill, 2026-08-22"
     },
+    "unity-ai-hero-billiards-v3": {
+      "path": "/assets/editorial/unity-ai-hero-billiards-v3.png",
+      "kind": "ai-assisted-editorial",
+      "source": "OpenAI Image Generation Skill, generated 2026-08-22 from a photorealistic billiards-forward time-cafe hero brief"
+    },
     "unity-ai-gaming-v2": {
       "path": "/assets/editorial/unity-ai-gaming-v2.png",
       "kind": "ai-assisted-editorial",

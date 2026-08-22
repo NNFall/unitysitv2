@@ -26,17 +26,19 @@ export function HeroSection({ content, assetPath }: { content: SiteContent['hero
           </Reveal>
         </div>
         <Reveal className="hero__media" delay={100}>
-          <img src={assetPath('hero')} alt="Живой кадр с бильярдом в UNITY" />
+          <img src={assetPath('hero')} alt="Редакционный кадр UNITY: бильярдный стол на переднем плане, игровые и кинозоны в глубине кафе" />
           <div className="hero__stamp"><span>UNITY</span><small>время для людей и идей</small></div>
           <div className="hero__media-caption">Самара · Гагарина, 118</div>
         </Reveal>
       </div>
-      <InfoRibbon items={[
-        { icon: <MapPin />, title: 'Самара', detail: 'ул. Гагарина, 118' },
-        { icon: <Train />, title: 'Советская', detail: '4 минуты пешком' },
-        { icon: <CalendarBlank />, title: 'Форматы', detail: 'игры · кино · встречи' },
-        { icon: <Clock />, title: 'До позднего', detail: 'пт–сб до 06:00' },
-      ]} />
+      <Reveal delay={220}>
+        <InfoRibbon items={[
+          { icon: <MapPin />, label: 'адрес', title: 'Самара', detail: 'ул. Гагарина, 118' },
+          { icon: <Train />, label: 'метро', title: 'Советская', detail: 'около 4 минут пешком' },
+          { icon: <CalendarBlank />, label: 'форматы', title: '4 сценария', detail: 'PlayStation · бильярд · кино · игры' },
+          { icon: <Clock />, label: 'режим', title: 'До позднего', detail: 'Пн–Чт до 04:00 · Пт–Сб до 06:00' },
+        ]} />
+      </Reveal>
     </section>
   )
 }

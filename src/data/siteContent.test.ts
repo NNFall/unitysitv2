@@ -37,6 +37,8 @@ describe('UNITY content contract', () => {
     expect(confirmedFacts.every(({ provenance }) => provenance.some(({ url }) => url === sources.yandexOrg))).toBe(true)
     expect(siteContent.social.vk.provenance.some(({ url }) => url === sources.vk)).toBe(true)
     expect(siteContent.contact.mapUrl).toBe(sources.yandexOrg)
+    expect(siteContent.contact.mapEmbedUrl).toBe(sources.yandexMapEmbed)
+    expect(siteContent.contact.mapEmbedUrl).toContain('map-widget/v1')
     expect(siteContent.contact.shortMapUrl).toBe(sources.yandexShortMap)
   })
 

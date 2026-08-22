@@ -1,13 +1,15 @@
 import { ArrowUpRight, CheckCircle, Clock, MapPin, Phone, Plus, Train } from '@phosphor-icons/react'
 import { FormEvent, useState } from 'react'
-import { Button } from './Button'
 import { TicketEdge } from './TicketEdge'
+import { YandexMapEmbed } from './YandexMapEmbed'
+import { useReveal } from './motion/Reveal'
 import type { SiteContent } from '../data/siteContent'
 
 type FormState = { name: string; contact: string; date: string; guests: string }
 const emptyForm: FormState = { name: '', contact: '', date: '', guests: '' }
 
 export function BookingSection({ content, assetPath }: { content: SiteContent; assetPath: (key: string) => string }) {
+  const reveal = useReveal({ delay: 200 })
   const [form, setForm] = useState(emptyForm)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(false)
@@ -20,7 +22,7 @@ export function BookingSection({ content, assetPath }: { content: SiteContent; a
   }
 
   return (
-    <section className="scene booking-scene" id="booking-section" aria-labelledby="booking-title">
+    <section ref={reveal.ref} className={`scene booking-scene ${reveal.className}`} style={reveal.style} id="booking-section" aria-labelledby="booking-title">
       <span id="booking" className="section-anchor" aria-hidden="true" />
       <span id="contacts" className="section-anchor" aria-hidden="true" />
       <div className="booking__intro">
@@ -36,11 +38,7 @@ export function BookingSection({ content, assetPath }: { content: SiteContent; a
         </div>
       </div>
       <div className="booking__map-wrap">
-        <div className="map-card">
-          <div className="map-card__grid" aria-hidden="true"><span className="map-road map-road--one" /><span className="map-road map-road--two" /><span className="map-road map-road--three" /><span className="map-block map-block--one" /><span className="map-block map-block--two" /><span className="map-block map-block--three" /></div>
-          <div className="map-card__pin"><MapPin aria-hidden="true" /><strong>UNITY</strong><small>Гагарина, 118</small></div>
-          <a href={content.contact.mapUrl} target="_blank" rel="noreferrer" className="map-card__link">{content.contact.mapLabel} <span aria-hidden="true">↗</span></a>
-        </div>
+        <YandexMapEmbed embedUrl={content.contact.mapEmbedUrl} mapUrl={content.contact.mapUrl} mapLabel={content.contact.mapLabel} />
         <img className="booking__photo" src={assetPath('entrance')} alt="Вход в UNITY с оранжевой вывеской" />
         <div className="route-card">
           <p className="eyebrow">как пройти</p>
