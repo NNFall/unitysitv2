@@ -232,11 +232,11 @@ git add docs/visual-comparison-2026-08-26-final-polish.md
 git commit -m "docs: record unity final polish qa"
 ```
 
-- [ ] **Step 5: Push and deploy the verified build**
+- [x] **Step 5: Push and deploy the verified build**
 
 Push `main`, atomically replace `/root/unitysite` with the verified `dist`, retain a timestamped backup, run `nginx -t`, reload Nginx, and verify the public route. Do not place credentials in commands captured by docs or source.
 
-- [ ] **Step 6: Verify production and record deployment**
+- [x] **Step 6: Verify production and record deployment**
 
 Fresh-load `https://kaigo.space/site/unity/` in the in-app Browser at desktop and mobile, recheck console, geometry and key interactions, write `docs/deployment-2026-08-26-final-polish.md`, and commit/push the evidence.
 
