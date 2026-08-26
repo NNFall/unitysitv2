@@ -109,10 +109,10 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           </TicketEdge>
         </div>
         <TicketEdge tone="navy" className="community-panel">
-          <p className="eyebrow">наше сообщество</p>
-          <h3>Вечера, которые складываются сами</h3>
-          <p>Следите за новостями, живыми фото и ближайшими сценариями во ВКонтакте.</p>
-          <a className="button button--primary community-panel__vk" href={content.social.vk.href} target="_blank" rel="noreferrer noopener">Перейти во ВКонтакте <ArrowRight aria-hidden="true" /></a>
+          <p className="eyebrow community-panel__label">наше сообщество</p>
+          <h3>Вечера собирают своих</h3>
+          <p>Анонсы, живые фотографии и быстрый способ узнать, что происходит в UNITY сегодня.</p>
+          <a className="button button--primary button--vk community-panel__vk" href={content.social.vk.href} target="_blank" rel="noreferrer noopener">Перейти во ВКонтакте <ArrowRight aria-hidden="true" /></a>
         </TicketEdge>
       </div>
     </section>

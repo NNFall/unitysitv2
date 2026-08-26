@@ -73,9 +73,10 @@ describe('CommunitySection', () => {
   it('makes the verified VK destination a noticeable community action', () => {
     render(<CommunitySection content={siteContent} assetPath={assetPath} />)
 
+    expect(screen.getByText('наше сообщество')).toHaveClass('community-panel__label')
     const vkLink = screen.getByRole('link', { name: /перейти во вконтакте/i })
     expect(vkLink).toHaveAttribute('href', siteContent.social.vk.href)
-    expect(vkLink).toHaveClass('button', 'button--primary')
+    expect(vkLink).toHaveClass('button', 'button--primary', 'button--vk')
   })
 
   it('moves one review on a horizontal pointer swipe', () => {
