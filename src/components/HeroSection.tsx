@@ -29,6 +29,7 @@ export function HeroSection({ content, assetPath }: { content: SiteContent['hero
           <img src={assetPath('hero')} alt="Редакционный кадр UNITY: бильярдный стол на переднем плане, игровые и кинозоны в глубине кафе" />
           <div className="hero__stamp"><span>UNITY</span><small>время для людей и идей</small></div>
           <div className="hero__media-caption">Самара · Гагарина, 118</div>
+          <div className="hero__media-rail">бильярд · PlayStation · кино · настольные игры</div>
         </Reveal>
       </div>
       <Reveal delay={220}>

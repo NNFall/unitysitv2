@@ -31,12 +31,12 @@ export function BookingSection({ content, assetPath }: { content: SiteContent; a
         <h2 id="booking-title">Встретимся <em>в UNITY</em></h2>
         <span className="section-wave" aria-hidden="true">≈≈≈</span>
         <p>Мы рядом, когда хочется отдохнуть, поиграть, поработать или провести вечер с близкими.</p>
-        <div className="contact-list">
+        <address className="booking__details contact-list" role="group" aria-label="Контакты UNITY">
           <span><MapPin aria-hidden="true" /><strong>{content.contact.fullAddress.value}</strong><small>Открыть карту и построить маршрут</small></span>
           <span><Train aria-hidden="true" /><strong>м. {content.contact.metro.value}</strong><small>{content.contact.metroDetail.value}</small></span>
           <span><Clock aria-hidden="true" /><strong>Пн–Вс, до позднего</strong><small>Пт–Сб до 06:00 · график в карточке</small></span>
           <span><Phone aria-hidden="true" /><a href={content.contact.phoneHref}><strong>{content.contact.phone.value}</strong></a><small>Позвонить или написать</small></span>
-        </div>
+        </address>
       </div>
       <div className="booking__map-wrap">
         <YandexMapEmbed embedUrl={content.contact.mapEmbedUrl} mapUrl={content.contact.mapUrl} mapLabel={content.contact.mapLabel} />

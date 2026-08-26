@@ -6,6 +6,13 @@ import { assetPath } from '../App'
 import { siteContent } from '../data/siteContent'
 
 describe('BookingSection', () => {
+  it('groups the venue contact facts in a labelled address block', () => {
+    render(<BookingSection content={siteContent} assetPath={assetPath} />)
+
+    const contacts = screen.getByRole('group', { name: 'Контакты UNITY' })
+    expect(contacts.tagName).toBe('ADDRESS')
+  })
+
   it('asks for the required contact fields before submitting', () => {
     render(<BookingSection content={siteContent} assetPath={assetPath} />)
 
