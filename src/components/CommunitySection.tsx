@@ -1,4 +1,5 @@
-import { ArrowRight, Heart } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Heart } from '@phosphor-icons/react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useCallback, useRef, useState, type PointerEvent } from 'react'
 import { TicketEdge } from './TicketEdge'
 import { useCarouselAutoplay } from './motion/Carousel'
@@ -7,14 +8,20 @@ import type { ReviewItem, SiteContent } from '../data/siteContent'
 
 export function CommunitySection({ content, assetPath }: { content: SiteContent; assetPath: (key: string) => string }) {
   const reveal = useReveal({ delay: 160 })
+  const prefersReducedMotion = useReducedMotion()
   const [reviewIndex, setReviewIndex] = useState(0)
   const review = content.reviews[reviewIndex]
-  const advanceReview = useCallback(() => setReviewIndex((current) => (current + 1) % content.reviews.length), [content.reviews.length])
+  const goReview = useCallback((direction: number) => {
+    setReviewIndex((current) => (current + direction + content.reviews.length) % content.reviews.length)
+  }, [content.reviews.length])
+  const advanceReview = useCallback(() => goReview(1), [goReview])
   const autoplay = useCarouselAutoplay({ itemCount: content.reviews.length, onAdvance: advanceReview })
   const pointerStart = useRef<{ x: number; y: number } | null>(null)
   const attributionLabel = (review.attribution as ReviewItem['attribution']) === 'excerpt'
     ? 'Выдержка из публичного отзыва'
-    : 'Краткий пересказ публичного отзыва'
+    : 'Редакционный пересказ публичного отзыва'
+  const reviewSource = review.provenance.find((source) => source.url)
+  const reviewCounter = `${String(reviewIndex + 1).padStart(2, '0')} / ${String(content.reviews.length).padStart(2, '0')}`
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return
     pointerStart.current = { x: event.clientX, y: event.clientY }
@@ -27,7 +34,7 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
     const deltaX = event.clientX - start.x
     const deltaY = event.clientY - start.y
     if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY)) return
-    setReviewIndex((current) => (current + (deltaX < 0 ? 1 : -1) + content.reviews.length) % content.reviews.length)
+    goReview(deltaX < 0 ? 1 : -1)
   }
 
   return (
@@ -54,8 +61,6 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           aria-label="Отзывы гостей"
           aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion ? 'off' : 'polite'}
           tabIndex={0}
-          onMouseEnter={() => autoplay.setHovered(true)}
-          onMouseLeave={() => autoplay.setHovered(false)}
           onFocus={() => autoplay.setFocused(true)}
           onBlur={(event) => {
             if (!event.currentTarget.contains(event.relatedTarget as Node | null)) autoplay.setFocused(false)
@@ -67,10 +72,36 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
         >
           <TicketEdge className="review-card">
             <div className="review-card__label"><Heart aria-hidden="true" /> что говорят гости</div>
-            <div className="review-card__quote"><span className="quote-mark">“</span><p>{review.quote}</p></div>
-            <p className="review-card__attribution">{attributionLabel}</p>
-            <div className="review-card__meta"><span><strong className="review-card__author">{review.author}</strong><small className="review-card__date">{review.dateLabel}</small></span></div>
+            <motion.div
+              key={review.id}
+              className="review-card__content"
+              initial={prefersReducedMotion ? false : { opacity: 0.35, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="review-card__quote"><span className="quote-mark">“</span><p>{review.quote}</p></div>
+              <div className="review-card__source-row">
+                <p className="review-card__attribution">{attributionLabel}</p>
+                {reviewSource?.url ? (
+                  <a
+                    className="review-card__source"
+                    href={reviewSource.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label={`Источник отзыва: ${reviewSource.label}`}
+                  >
+                    Источник отзыва <ArrowUpRight aria-hidden="true" />
+                  </a>
+                ) : null}
+              </div>
+              <div className="review-card__meta"><span><strong className="review-card__author">{review.author}</strong><small className="review-card__date">{review.dateLabel}</small></span></div>
+            </motion.div>
             <div className="review-card__controls">
+              <div className="review-card__arrows">
+                <button type="button" aria-label="Предыдущий отзыв" onClick={() => goReview(-1)}><ArrowLeft aria-hidden="true" /></button>
+                <span className="review-card__counter" aria-live="off">{reviewCounter}</span>
+                <button type="button" aria-label="Следующий отзыв" onClick={() => goReview(1)}><ArrowRight aria-hidden="true" /></button>
+              </div>
               <div className="review-card__dots">
                 {content.reviews.map((item, index) => <button type="button" className={index === reviewIndex ? 'is-active' : ''} aria-label={`Отзыв ${index + 1}`} aria-pressed={index === reviewIndex} key={item.id} onClick={() => setReviewIndex(index)} />)}
               </div>

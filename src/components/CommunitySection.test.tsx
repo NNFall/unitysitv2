@@ -35,6 +35,41 @@ describe('CommunitySection', () => {
     expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
   })
 
+  it('exposes previous and next controls with a stable counter and review source', () => {
+    render(<CommunitySection content={siteContent} assetPath={assetPath} />)
+
+    expect(screen.getByRole('button', { name: 'Предыдущий отзыв' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Следующий отзыв' })).toBeInTheDocument()
+    expect(screen.getByText('01 / 03')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /источник отзыва/i })).toHaveAttribute(
+      'href',
+      siteContent.reviews[0].provenance[0].url,
+    )
+  })
+
+  it('keeps autoplay running on hover but pauses for keyboard focus', () => {
+    render(<CommunitySection content={siteContent} assetPath={assetPath} />)
+    const region = screen.getByRole('region', { name: 'Отзывы гостей' })
+
+    fireEvent.mouseEnter(region)
+    act(() => vi.advanceTimersByTime(5600))
+    expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
+
+    fireEvent.focus(region)
+    act(() => vi.advanceTimersByTime(5600))
+    expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
+  })
+
+  it('moves reviews with the visible arrow controls', () => {
+    render(<CommunitySection content={siteContent} assetPath={assetPath} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Следующий отзыв' }))
+    expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Предыдущий отзыв' }))
+    expect(screen.getByText(siteContent.reviews[0].author)).toBeInTheDocument()
+  })
+
   it('makes the verified VK destination a noticeable community action', () => {
     render(<CommunitySection content={siteContent} assetPath={assetPath} />)
 
