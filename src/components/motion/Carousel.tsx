@@ -115,11 +115,13 @@ export function Carousel({ items, assetPath }: CarouselProps) {
               <p className="event-feature__status" aria-label={`${statusLabel}, ${active.dateLabel}`}>{statusLabel} · {active.dateLabel}</p>
               <h3>{active.title}</h3>
               <p>{active.description}</p>
-              <div className="event-feature__meta">
-                <span><Clock aria-hidden="true" /> вечерний формат</span>
-                <span><UsersThree aria-hidden="true" /> для компании</span>
+              <div className="event-feature__footer">
+                <div className="event-feature__meta">
+                  <span><Clock aria-hidden="true" /> вечерний формат</span>
+                  <span><UsersThree aria-hidden="true" /> для компании</span>
+                </div>
+                <Button href={active.cta.href} variant="secondary" showArrow>{active.cta.label}</Button>
               </div>
-              <Button href={active.cta.href} variant="secondary" showArrow>{active.cta.label}</Button>
             </div>
             <div
               className="event-feature__media"

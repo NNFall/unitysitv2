@@ -13,4 +13,11 @@ describe('EventsSection', () => {
     expect(screen.getByRole('region', { name: 'Сценарии вечера' })).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /предложить свой формат/i })).not.toBeInTheDocument()
   })
+
+  it('keeps event metadata and CTA in a dedicated footer', () => {
+    render(<EventsSection content={siteContent} assetPath={assetPath} />)
+
+    const cta = screen.getByRole('link', { name: siteContent.events[0].cta.label })
+    expect(cta.closest('.event-feature__footer')).not.toBeNull()
+  })
 })
