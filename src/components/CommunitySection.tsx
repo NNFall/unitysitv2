@@ -16,14 +16,14 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
   }, [content.reviews.length])
   const autoplay = useCarouselAutoplay({ itemCount: content.reviews.length, onAdvance: () => advanceReview(1) })
   const goReview = useCallback((direction: number) => {
-    autoplay.stop()
     advanceReview(direction)
-  }, [advanceReview, autoplay.stop])
+    autoplay.restart()
+  }, [advanceReview, autoplay.restart])
   const selectReview = useCallback((nextIndex: number) => {
-    autoplay.stop()
     setReviewIndex(nextIndex)
-  }, [autoplay.stop])
-  const pointerStart = useRef<{ x: number; y: number } | null>(null)
+    autoplay.restart()
+  }, [autoplay.restart])
+  const pointerStart = useRef<{ id: number; x: number; y: number } | null>(null)
   const attributionLabel = (review.attribution as ReviewItem['attribution']) === 'excerpt'
     ? 'Выдержка из публичного отзыва'
     : 'Редакционный пересказ публичного отзыва'
@@ -31,13 +31,17 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
   const reviewCounter = `${String(reviewIndex + 1).padStart(2, '0')} / ${String(content.reviews.length).padStart(2, '0')}`
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return
-    pointerStart.current = { x: event.clientX, y: event.clientY }
+    if (event.target instanceof Element && event.target.closest('a, button')) return
+    if (pointerStart.current) return
+    pointerStart.current = { id: event.pointerId, x: event.clientX, y: event.clientY }
+    autoplay.setInteracting(true)
     event.currentTarget.setPointerCapture?.(event.pointerId)
   }
   const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
     const start = pointerStart.current
+    if (!start || start.id !== event.pointerId) return
     pointerStart.current = null
-    if (!start) return
+    autoplay.setInteracting(false)
     const deltaX = event.clientX - start.x
     const deltaY = event.clientY - start.y
     if (Math.abs(deltaX) < 48 || Math.abs(deltaX) <= Math.abs(deltaY)) return
@@ -66,27 +70,35 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           role="region"
           aria-roledescription="карусель"
           aria-label="Отзывы гостей"
-          aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion || autoplay.isStopped ? 'polite' : 'off'}
+          aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion ? 'polite' : 'off'}
           aria-describedby="review-carousel-help"
           tabIndex={0}
-          onFocus={() => autoplay.setFocused(true)}
+          onMouseEnter={() => autoplay.setHovered(true)}
+          onMouseLeave={() => autoplay.setHovered(false)}
+          onFocus={(event) => {
+            if (event.target === event.currentTarget) autoplay.setFocused(true)
+          }}
           onBlur={(event) => {
             if (!event.currentTarget.contains(event.relatedTarget as Node | null)) autoplay.setFocused(false)
           }}
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
-          onPointerCancel={() => { pointerStart.current = null }}
+          onPointerCancel={(event) => {
+            if (pointerStart.current?.id !== event.pointerId) return
+            pointerStart.current = null
+            autoplay.setInteracting(false)
+          }}
           style={{ touchAction: 'pan-y' }}
         >
-          <p className="sr-only" id="review-carousel-help">Ручное переключение останавливает автоматическую смену отзывов.</p>
+          <p className="sr-only" id="review-carousel-help">Ручное переключение начинает новый пятисекундный цикл смены отзывов.</p>
           <TicketEdge className="review-card">
             <div className="review-card__label"><Heart aria-hidden="true" /> что говорят гости</div>
             <motion.div
               key={review.id}
               className="review-card__content"
-              initial={prefersReducedMotion ? false : { opacity: 0.35, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
+              initial={prefersReducedMotion ? false : { opacity: 0.45, scale: 0.992, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
             >
               <div className="review-card__quote"><span className="quote-mark">“</span><p>{review.quote}</p></div>
               <div className="review-card__source-row">

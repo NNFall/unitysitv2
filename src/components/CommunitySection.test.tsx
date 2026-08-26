@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { siteContent } from '../data/siteContent'
+import { CAROUSEL_AUTOPLAY_INTERVAL } from './motion/Carousel'
 import { CommunitySection } from './CommunitySection'
 
 const assetPath = (key: string) => `/assets/${key}.jpg`
@@ -28,10 +29,10 @@ describe('CommunitySection', () => {
   it('autoplays reviews without exposing timing or autoplay controls', () => {
     render(<CommunitySection content={siteContent} assetPath={assetPath} />)
     expect(screen.queryByText('Листайте отзывы')).not.toBeInTheDocument()
-    expect(screen.queryByText(/каждые 5,6 сек/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/каждые 5 сек/i)).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /автопрокрутку/i })).not.toBeInTheDocument()
 
-    act(() => vi.advanceTimersByTime(5600))
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL))
     expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
   })
 
@@ -56,17 +57,18 @@ describe('CommunitySection', () => {
     )
   })
 
-  it('keeps autoplay running on hover but pauses for keyboard focus', () => {
+  it('pauses autoplay on hover and keyboard focus', () => {
     render(<CommunitySection content={siteContent} assetPath={assetPath} />)
     const region = screen.getByRole('region', { name: 'Отзывы гостей' })
 
     fireEvent.mouseEnter(region)
-    act(() => vi.advanceTimersByTime(5600))
-    expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL))
+    expect(screen.getByText(siteContent.reviews[0].author)).toBeInTheDocument()
 
+    fireEvent.mouseLeave(region)
     fireEvent.focus(region)
-    act(() => vi.advanceTimersByTime(5600))
-    expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL))
+    expect(screen.getByText(siteContent.reviews[0].author)).toBeInTheDocument()
   })
 
   it('moves reviews with the visible arrow controls', () => {
@@ -79,13 +81,28 @@ describe('CommunitySection', () => {
     expect(screen.getByText(siteContent.reviews[0].author)).toBeInTheDocument()
   })
 
-  it('stops autoplay for the session after a manual review selection', () => {
+  it('starts a fresh five-second cycle after a manual review selection', () => {
     render(<CommunitySection content={siteContent} assetPath={assetPath} />)
 
     fireEvent.click(screen.getByRole('button', { name: 'Следующий отзыв' }))
-    act(() => vi.advanceTimersByTime(5600))
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL - 1))
 
     expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
+
+    act(() => vi.advanceTimersByTime(1))
+
+    expect(screen.getByText(siteContent.reviews[2].author)).toBeInTheDocument()
+  })
+
+  it('keeps the new cycle after a focused review-arrow click', () => {
+    render(<CommunitySection content={siteContent} assetPath={assetPath} />)
+    const next = screen.getByRole('button', { name: 'Следующий отзыв' })
+
+    next.focus()
+    fireEvent.click(next)
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL))
+
+    expect(screen.getByText(siteContent.reviews[2].author)).toBeInTheDocument()
   })
 
   it('makes the verified VK destination a noticeable community action', () => {

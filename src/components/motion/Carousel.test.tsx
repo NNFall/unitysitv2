@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { Carousel } from './Carousel'
+import { CAROUSEL_AUTOPLAY_INTERVAL, Carousel } from './Carousel'
 import { siteContent } from '../../data/siteContent'
 
 const assetPath = (key: string) => `/assets/${key}.jpg`
@@ -36,7 +36,7 @@ describe('Carousel', () => {
     expect(screen.getByText(/Концепция · афиша скоро/i)).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /автопрокрутку/i })).not.toBeInTheDocument()
 
-    act(() => vi.advanceTimersByTime(5600))
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL))
     expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
   })
 
@@ -46,22 +46,48 @@ describe('Carousel', () => {
     const region = screen.getByRole('region', { name: 'Сценарии вечера' })
 
     fireEvent.mouseEnter(region)
-    act(() => vi.advanceTimersByTime(5600))
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL))
     expect(screen.getByRole('button', { name: `Показать ${siteContent.events[0].title}` })).toHaveAttribute('aria-pressed', 'true')
 
     fireEvent.mouseLeave(region)
-    act(() => vi.advanceTimersByTime(5600))
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL))
     expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
   })
 
-  it('stops autoplay for the session after a manual selection', () => {
+  it('starts a fresh five-second cycle after a manual selection', () => {
     vi.useFakeTimers()
     render(<Carousel items={siteContent.events} assetPath={assetPath} />)
 
     fireEvent.click(screen.getByRole('button', { name: 'Следующее событие' }))
-    act(() => vi.advanceTimersByTime(5600))
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL - 1))
 
     expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
+
+    act(() => vi.advanceTimersByTime(1))
+
+    expect(screen.getByRole('button', { name: `Показать ${siteContent.events[2].title}` })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('keeps the new five-second cycle after a focused arrow click', () => {
+    vi.useFakeTimers()
+    render(<Carousel items={siteContent.events} assetPath={assetPath} />)
+    const next = screen.getByRole('button', { name: 'Следующее событие' })
+
+    next.focus()
+    fireEvent.click(next)
+    act(() => vi.advanceTimersByTime(CAROUSEL_AUTOPLAY_INTERVAL))
+
+    expect(screen.getByRole('button', { name: `Показать ${siteContent.events[2].title}` })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('keeps arrow navigation deterministic during a rapid second click', async () => {
+    render(<Carousel items={siteContent.events} assetPath={assetPath} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Следующее событие' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Следующее событие' }))
+
+    await waitFor(() => expect(screen.getByRole('heading', { name: siteContent.events[2].title })).toBeInTheDocument())
+    expect(document.querySelectorAll('.event-feature')).toHaveLength(1)
   })
 
   it('moves one scenario on a horizontal pointer swipe', () => {
@@ -69,9 +95,9 @@ describe('Carousel', () => {
     const media = document.querySelector<HTMLDivElement>('.event-feature__media')
     expect(media).not.toBeNull()
 
-    const dispatchPointer = (type: 'pointerdown' | 'pointerup', clientX: number, clientY: number) => {
+    const dispatchPointer = (type: 'pointerdown' | 'pointerup', clientX: number, clientY: number, pointerId = 1) => {
       const event = new Event(type, { bubbles: true })
-      Object.defineProperties(event, { clientX: { value: clientX }, clientY: { value: clientY } })
+      Object.defineProperties(event, { clientX: { value: clientX }, clientY: { value: clientY }, pointerId: { value: pointerId } })
       media!.dispatchEvent(event)
     }
     act(() => {
@@ -80,5 +106,25 @@ describe('Carousel', () => {
     })
 
     expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('ignores a second pointer while a first swipe is active', () => {
+    render(<Carousel items={siteContent.events} assetPath={assetPath} />)
+    const stage = document.querySelector<HTMLDivElement>('.event-carousel__stage')
+    expect(stage).not.toBeNull()
+
+    const dispatchPointer = (type: 'pointerdown' | 'pointerup', clientX: number, clientY: number, pointerId: number) => {
+      const event = new Event(type, { bubbles: true })
+      Object.defineProperties(event, { clientX: { value: clientX }, clientY: { value: clientY }, pointerId: { value: pointerId } })
+      stage!.dispatchEvent(event)
+    }
+
+    act(() => {
+      dispatchPointer('pointerdown', 320, 160, 1)
+      dispatchPointer('pointerdown', 200, 160, 2)
+      dispatchPointer('pointerup', 100, 164, 2)
+    })
+
+    expect(screen.getByRole('button', { name: `Показать ${siteContent.events[0].title}` })).toHaveAttribute('aria-pressed', 'true')
   })
 })

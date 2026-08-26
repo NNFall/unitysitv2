@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, Clock, UsersThree } from '@phosphor-icons/react'
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react'
 import type { EventItem } from '../../data/siteContent'
 import { Button } from '../Button'
@@ -10,7 +10,7 @@ type CarouselProps = {
   assetPath: (key: string) => string
 }
 
-export const CAROUSEL_AUTOPLAY_INTERVAL = 5600
+export const CAROUSEL_AUTOPLAY_INTERVAL = 5000
 
 type CarouselAutoplayOptions = {
   itemCount: number
@@ -24,6 +24,8 @@ type CarouselAutoplayState = {
   isStopped: boolean
   setHovered: (value: boolean) => void
   setFocused: (value: boolean) => void
+  setInteracting: (value: boolean) => void
+  restart: () => void
   stop: () => void
 }
 
@@ -36,27 +38,36 @@ export function useCarouselAutoplay({
   const prefersReducedMotion = useReducedMotion()
   const [isHovered, setIsHovered] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
+  const [isInteracting, setIsInteracting] = useState(false)
   const [isStopped, setIsStopped] = useState(false)
+  const [cycle, setCycle] = useState(0)
   const onAdvanceRef = useRef(onAdvance)
+  const restart = useCallback(() => {
+    setIsStopped(false)
+    setCycle((current) => current + 1)
+  }, [])
   const stop = useCallback(() => setIsStopped(true), [])
+  const isTemporarilyPaused = isHovered || isFocused || isInteracting
 
   useEffect(() => {
     onAdvanceRef.current = onAdvance
   }, [onAdvance])
 
   useEffect(() => {
-    if (prefersReducedMotion || isHovered || isFocused || isStopped || itemCount < 2) return
+    if (prefersReducedMotion || isTemporarilyPaused || isStopped || itemCount < 2) return
 
     const timer = window.setInterval(() => onAdvanceRef.current(), intervalMs)
     return () => window.clearInterval(timer)
-  }, [intervalMs, isFocused, isHovered, isStopped, itemCount, prefersReducedMotion])
+  }, [cycle, intervalMs, isStopped, isTemporarilyPaused, itemCount, prefersReducedMotion])
 
   return {
     isReducedMotion: Boolean(prefersReducedMotion),
-    isTemporarilyPaused: isHovered || isFocused,
+    isTemporarilyPaused,
     isStopped,
     setHovered: setIsHovered,
     setFocused: setIsFocused,
+    setInteracting: setIsInteracting,
+    restart,
     stop,
   }
 }
@@ -68,27 +79,31 @@ export function Carousel({ items, assetPath }: CarouselProps) {
   const advance = useCallback((direction: number) => setIndex((current) => (current + direction + items.length) % items.length), [items.length])
   const autoplay = useCarouselAutoplay({ itemCount: items.length, onAdvance: () => advance(1) })
   const go = useCallback((direction: number) => {
-    autoplay.stop()
     advance(direction)
-  }, [advance, autoplay.stop])
+    autoplay.restart()
+  }, [advance, autoplay.restart])
   const select = useCallback((nextIndex: number) => {
-    autoplay.stop()
     setIndex(nextIndex)
-  }, [autoplay.stop])
-  const pointerStart = useRef<{ x: number; y: number } | null>(null)
+    autoplay.restart()
+  }, [autoplay.restart])
+  const pointerStart = useRef<{ id: number; x: number; y: number } | null>(null)
 
   if (!active) return null
 
   const statusLabel = active.status === 'concept' ? 'Концепция' : 'Опубликовано'
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return
-    pointerStart.current = { x: event.clientX, y: event.clientY }
+    if (event.target instanceof Element && event.target.closest('a, button')) return
+    if (pointerStart.current) return
+    pointerStart.current = { id: event.pointerId, x: event.clientX, y: event.clientY }
+    autoplay.setInteracting(true)
     event.currentTarget.setPointerCapture?.(event.pointerId)
   }
   const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
     const start = pointerStart.current
+    if (!start || start.id !== event.pointerId) return
     pointerStart.current = null
-    if (!start) return
+    autoplay.setInteracting(false)
 
     const deltaX = event.clientX - start.x
     const deltaY = event.clientY - start.y
@@ -102,26 +117,37 @@ export function Carousel({ items, assetPath }: CarouselProps) {
       role="region"
       aria-roledescription="карусель"
       aria-label="Сценарии вечера"
-      aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion || autoplay.isStopped ? 'polite' : 'off'}
+      aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion ? 'polite' : 'off'}
       aria-describedby="event-carousel-help"
       tabIndex={0}
       onMouseEnter={() => autoplay.setHovered(true)}
       onMouseLeave={() => autoplay.setHovered(false)}
-      onFocus={() => autoplay.setFocused(true)}
+      onFocus={(event) => {
+        if (event.target === event.currentTarget) autoplay.setFocused(true)
+      }}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) autoplay.setFocused(false)
       }}
     >
-      <p className="sr-only" id="event-carousel-help">Ручное переключение останавливает автоматическую смену событий.</p>
-      <div className="event-carousel__stage">
-        <AnimatePresence initial={false} mode="sync">
+      <p className="sr-only" id="event-carousel-help">Ручное переключение начинает новый пятисекундный цикл смены событий.</p>
+      <div
+        className="event-carousel__stage"
+        style={{ touchAction: 'pan-y' }}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={(event) => {
+          if (pointerStart.current?.id !== event.pointerId) return
+          pointerStart.current = null
+          autoplay.setInteracting(false)
+        }}
+      >
+        <div className="event-feature">
           <motion.div
             key={active.id}
-            className="event-feature"
-            initial={{ opacity: 0, x: 24 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -24 }}
-            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+            className="event-feature__inner"
+            initial={prefersReducedMotion ? false : { opacity: 0.45, scale: 0.992, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
             role="group"
             aria-roledescription="слайд"
             aria-label={`${index + 1} из ${items.length}`}
@@ -139,18 +165,12 @@ export function Carousel({ items, assetPath }: CarouselProps) {
                 <Button href={active.cta.href} variant="secondary" showArrow>{active.cta.label}</Button>
               </div>
             </div>
-            <div
-              className="event-feature__media"
-              style={{ touchAction: 'pan-y' }}
-              onPointerDown={handlePointerDown}
-              onPointerUp={handlePointerUp}
-              onPointerCancel={() => { pointerStart.current = null }}
-            >
+            <div className="event-feature__media">
               <img src={assetPath(active.media.assetKey)} alt={active.media.alt} loading="lazy" decoding="async" />
               <span className="media-caption">концепция афиши</span>
             </div>
           </motion.div>
-        </AnimatePresence>
+        </div>
       </div>
       <div className="event-carousel__controls">
         <div className="carousel-dots" aria-label="Выбор события">
