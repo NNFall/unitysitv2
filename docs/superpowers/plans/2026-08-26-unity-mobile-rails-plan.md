@@ -161,6 +161,6 @@ Expected: no failures and an empty whitespace diff check.
 
 At `390×844` and `320×844`, test each visible arrow, a left/right swipe on events/reviews/formats, the five-second advance, no white transition frame, and no horizontal document overflow. Then recheck desktop controls at `1920×1080`.
 
-- [ ] **Step 3: Release the verified build**
+- [x] **Step 3: Release the verified build**
 
 Commit only scoped source/test/docs files, push `main`, atomically deploy the built `dist` into `/root/unitysite`, run `nginx -t` and reload, then fresh-load `https://kaigo.space/site/unity/` at mobile width. Never put deployment credentials in source, logs, or documentation.

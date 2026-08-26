@@ -35,3 +35,14 @@
 - Документальная фотография входа загрузилась из `assets/venue/unity-yandex-01.jpg` с `naturalWidth=1024`.
 
 Публичная версия соответствует локально проверенному release commit и готова к демонстрации.
+
+## Mobile carousel follow-up release
+
+- Runtime commits: `61771ae94c7c1c57162712df2844d4b85e46dfb7` (mobile rails) and `146e087dd35fbafb19dd7601549171e4461fea32` (hidden ticket scrollbar).
+- `origin/main` was checked against `146e087dd35fbafb19dd7601549171e4461fea32` after push.
+- `npm run test:run`: 10 files, `48/48` tests passed; `npm run build` completed successfully with Vite 7.3.6.
+- The verified 35-file, 24 MB `dist` was uploaded to a separate release directory. SHA-256 of `index.html`, the JavaScript bundle, and the CSS bundle matched local output before each atomic switch.
+- The final live directory was atomically switched to `/root/unitysite`; the immediately preceding release remains in `/root/unitysite.backup-20260826-175300`.
+- `nginx -t` completed successfully and Nginx reloaded as `active`. Existing unrelated duplicate-server-name/protocol warnings remain non-blocking.
+- Public HTTP check: `https://kaigo.space/site/unity/` returns `200` and references `index-B8eufRIE.js` plus `index-BoTyLdwb.css`.
+- Fresh in-app Browser QA at `390×844`: `clientWidth=scrollWidth=375`; event-ticket rail remains horizontally swipeable (`343/606px`) with `scrollbar-width: none`; formats auto-advance and event arrow/swipe behavior were rechecked in the preceding runtime release; console warnings/errors: `0`.
