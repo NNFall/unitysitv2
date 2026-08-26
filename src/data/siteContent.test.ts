@@ -24,6 +24,7 @@ describe('UNITY content contract', () => {
     expect(siteContent.reviews.every(({ quote, author, dateLabel, attribution, provenance }) => (
       quote.trim() && author.trim() && dateLabel.trim() && ['excerpt', 'summary'].includes(attribution) && provenance.length > 0
     ))).toBe(true)
+    expect(siteContent.reviews.every(({ provenance }) => provenance.some(({ url }) => url === sources.yandexOrg))).toBe(true)
   })
 
   it('attaches source provenance to confirmed location and contact facts', () => {

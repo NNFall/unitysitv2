@@ -11,11 +11,18 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
   const prefersReducedMotion = useReducedMotion()
   const [reviewIndex, setReviewIndex] = useState(0)
   const review = content.reviews[reviewIndex]
-  const goReview = useCallback((direction: number) => {
+  const advanceReview = useCallback((direction: number) => {
     setReviewIndex((current) => (current + direction + content.reviews.length) % content.reviews.length)
   }, [content.reviews.length])
-  const advanceReview = useCallback(() => goReview(1), [goReview])
-  const autoplay = useCarouselAutoplay({ itemCount: content.reviews.length, onAdvance: advanceReview })
+  const autoplay = useCarouselAutoplay({ itemCount: content.reviews.length, onAdvance: () => advanceReview(1) })
+  const goReview = useCallback((direction: number) => {
+    autoplay.stop()
+    advanceReview(direction)
+  }, [advanceReview, autoplay.stop])
+  const selectReview = useCallback((nextIndex: number) => {
+    autoplay.stop()
+    setReviewIndex(nextIndex)
+  }, [autoplay.stop])
   const pointerStart = useRef<{ x: number; y: number } | null>(null)
   const attributionLabel = (review.attribution as ReviewItem['attribution']) === 'excerpt'
     ? 'Выдержка из публичного отзыва'
@@ -48,9 +55,9 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           <p className="section-intro__copy">Здесь можно начать с игры, остаться на фильм и закончить разговором, который не хочется прерывать.</p>
         </div>
         <div className="community-mosaic">
-          <img className="community-mosaic__hero" src={assetPath('community-hero')} alt="Живой кадр пространства UNITY" />
-          <img src={assetPath('community-lounge')} alt="Мягкая зона отдыха UNITY" />
-          <img src={assetPath('community-screen')} alt="Кинозал UNITY" />
+          <img className="community-mosaic__hero" src={assetPath('community-hero')} alt="Живой кадр пространства UNITY" loading="lazy" decoding="async" />
+          <img src={assetPath('community-lounge')} alt="Мягкая зона отдыха UNITY" loading="lazy" decoding="async" />
+          <img src={assetPath('community-screen')} alt="Кинозал UNITY" loading="lazy" decoding="async" />
         </div>
       </div>
       <div className="community__bottom">
@@ -59,7 +66,8 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           role="region"
           aria-roledescription="карусель"
           aria-label="Отзывы гостей"
-          aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion ? 'off' : 'polite'}
+          aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion || autoplay.isStopped ? 'polite' : 'off'}
+          aria-describedby="review-carousel-help"
           tabIndex={0}
           onFocus={() => autoplay.setFocused(true)}
           onBlur={(event) => {
@@ -70,6 +78,7 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
           onPointerCancel={() => { pointerStart.current = null }}
           style={{ touchAction: 'pan-y' }}
         >
+          <p className="sr-only" id="review-carousel-help">Ручное переключение останавливает автоматическую смену отзывов.</p>
           <TicketEdge className="review-card">
             <div className="review-card__label"><Heart aria-hidden="true" /> что говорят гости</div>
             <motion.div
@@ -103,7 +112,7 @@ export function CommunitySection({ content, assetPath }: { content: SiteContent;
                 <button type="button" aria-label="Следующий отзыв" onClick={() => goReview(1)}><ArrowRight aria-hidden="true" /></button>
               </div>
               <div className="review-card__dots">
-                {content.reviews.map((item, index) => <button type="button" className={index === reviewIndex ? 'is-active' : ''} aria-label={`Отзыв ${index + 1}`} aria-pressed={index === reviewIndex} key={item.id} onClick={() => setReviewIndex(index)} />)}
+                {content.reviews.map((item, index) => <button type="button" className={index === reviewIndex ? 'is-active' : ''} aria-label={`Отзыв ${index + 1}`} aria-pressed={index === reviewIndex} key={item.id} onClick={() => selectReview(index)} />)}
               </div>
             </div>
           </TicketEdge>

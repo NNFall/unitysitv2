@@ -20,10 +20,24 @@ describe('UNITY landing shell', () => {
   })
 
   it('uses the editorial billiards hero asset without reusing a venue frame', () => {
-    expect(assetPath('hero')).toContain('unity-ai-hero-billiards-v3.png')
+    expect(assetPath('hero')).toContain('unity-ai-hero-billiards-v3.webp')
     expect(assetPath('hero')).not.toContain('unity-yandex-05.jpg')
     const cardAssets = [...siteContent.formats, ...siteContent.events].map(({ media }) => assetPath(media.assetKey))
     expect(cardAssets).not.toContain(assetPath('hero'))
+  })
+
+  it('loads only the hero eagerly and defers below-fold photography', () => {
+    render(<App />)
+    const hero = screen.getByRole('img', { name: /редакционный кадр UNITY/i })
+    const belowFoldImages = screen.getAllByRole('img').filter((image) => image !== hero)
+
+    expect(hero).toHaveAttribute('fetchpriority', 'high')
+    expect(hero).not.toHaveAttribute('loading', 'lazy')
+    expect(belowFoldImages.length).toBeGreaterThan(0)
+    for (const image of belowFoldImages) {
+      expect(image).toHaveAttribute('loading', 'lazy')
+      expect(image).toHaveAttribute('decoding', 'async')
+    }
   })
 
   it('keeps the hero ribbon and footer useful beyond the section titles', () => {

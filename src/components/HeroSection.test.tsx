@@ -10,5 +10,6 @@ describe('HeroSection', () => {
     render(<HeroSection content={siteContent.hero} assetPath={assetPath} />)
 
     expect(screen.getByText('бильярд · PlayStation · кино · настольные игры')).toHaveClass('hero__media-rail')
+    expect(screen.getByText(/редакционный кадр/i)).toHaveClass('hero__media-caption')
   })
 })

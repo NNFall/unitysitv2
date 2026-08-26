@@ -6,6 +6,12 @@ import { assetPath } from '../App'
 import { siteContent } from '../data/siteContent'
 
 describe('BookingSection', () => {
+  it('uses a documentary venue photo for the entrance', () => {
+    render(<BookingSection content={siteContent} assetPath={assetPath} />)
+
+    expect(screen.getByRole('img', { name: /реальный вид входа UNITY/i })).toBeInTheDocument()
+  })
+
   it('groups the venue contact facts in a labelled address block', () => {
     render(<BookingSection content={siteContent} assetPath={assetPath} />)
 

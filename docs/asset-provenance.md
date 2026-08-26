@@ -1,6 +1,6 @@
 # UNITY asset provenance
 
-Дата проверки: 2026-08-22
+Дата проверки: 2026-08-26
 
 ## Real venue photography
 
@@ -21,11 +21,13 @@ Gallery source: `https://yandex.ru/maps/org/unity/223835723975/gallery/`
 
 ## Generated decoration
 
-`public/assets/paper-texture.png` was generated with the built-in Image Generation Skill as a subtle cream paper surface. It contains no venue-specific people, signage or claims and is used only as a background texture. It must not be presented as a real venue photograph.
+`public/assets/paper-texture.png` is the generated master from the built-in Image Generation Skill; the live CSS uses its 640px compressed derivative `public/assets/paper-texture.webp` as a subtle cream paper surface. It contains no venue-specific people, signage or claims and is used only as a background texture. It must not be presented as a real venue photograph.
 
 ## AI-assisted editorial variants (second iteration)
 
-These files are intentionally labelled as editorial/AI-assisted imagery. They add visual variety to format, events and community cards; they are not documentary proof of a particular room, person or event. The real Yandex photos remain in the hero and community anchor positions; the address image is a clearly marked enhancement based on the real facade frame.
+These files are intentionally labelled as editorial/AI-assisted imagery. They add visual variety to the hero, format, events and community cards; they are not documentary proof of a particular room, person or event. The generated hero carries a visible editorial label. Real Yandex photos remain in the community mosaic and the live address/entrance position.
+
+Runtime delivery uses quality-88 WebP derivatives with matching base names. The PNG files listed below remain the lossless editorial masters; changing the delivery format does not change their provenance or documentary status.
 
 ## AI-assisted editorial hero (third iteration)
 
@@ -41,7 +43,7 @@ These files are intentionally labelled as editorial/AI-assisted imagery. They ad
 | `public/assets/editorial/unity-ai-event-movie-v2.png` | Movie-night brief | Movie-night event | Abstract projection only; no film IP, logo or readable text. |
 | `public/assets/editorial/unity-ai-event-board-v2.png` | Social board-game brief | Board-game event | Generic pieces and cards; no brand or readable game text. |
 | `public/assets/editorial/unity-ai-community-group-v2.png` | Relaxed lounge-community brief | Community mosaic | Editorial atmosphere, not a claim about a specific photographed visit. |
-| `public/assets/editorial/unity-ai-entrance-v2.png` | Edited from `unity-yandex-01.jpg` | Address/entrance image | Preserves the UNITY sign and Гагарина 118 marker; marked AI-assisted rather than documentary. |
+| `public/assets/editorial/unity-ai-entrance-v2.png` | Edited from `unity-yandex-01.jpg` | Retained editorial entrance alternative; not used by the live address block | Preserves the UNITY sign and Гагарина 118 marker; marked AI-assisted rather than documentary. |
 
 ## No background removal used
 

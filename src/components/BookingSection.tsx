@@ -40,7 +40,7 @@ export function BookingSection({ content, assetPath }: { content: SiteContent; a
       </div>
       <div className="booking__map-wrap">
         <YandexMapEmbed embedUrl={content.contact.mapEmbedUrl} mapUrl={content.contact.mapUrl} mapLabel={content.contact.mapLabel} />
-        <img className="booking__photo" src={assetPath('entrance')} alt="Вход в UNITY с оранжевой вывеской" />
+        <img className="booking__photo" src={assetPath('entrance')} alt="Реальный вид входа UNITY с оранжевой вывеской" loading="lazy" decoding="async" />
         <div className="route-card">
           <p className="eyebrow">как пройти</p>
           <h3>От метро до UNITY</h3>

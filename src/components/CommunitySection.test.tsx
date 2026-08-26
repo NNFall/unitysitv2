@@ -35,6 +35,15 @@ describe('CommunitySection', () => {
     expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
   })
 
+  it('silences automatic reviews and announces keyboard-controlled changes', () => {
+    render(<CommunitySection content={siteContent} assetPath={assetPath} />)
+    const region = screen.getByRole('region', { name: 'Отзывы гостей' })
+
+    expect(region).toHaveAttribute('aria-live', 'off')
+    fireEvent.focus(region)
+    expect(region).toHaveAttribute('aria-live', 'polite')
+  })
+
   it('exposes previous and next controls with a stable counter and review source', () => {
     render(<CommunitySection content={siteContent} assetPath={assetPath} />)
 
@@ -68,6 +77,15 @@ describe('CommunitySection', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Предыдущий отзыв' }))
     expect(screen.getByText(siteContent.reviews[0].author)).toBeInTheDocument()
+  })
+
+  it('stops autoplay for the session after a manual review selection', () => {
+    render(<CommunitySection content={siteContent} assetPath={assetPath} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Следующий отзыв' }))
+    act(() => vi.advanceTimersByTime(5600))
+
+    expect(screen.getByText(siteContent.reviews[1].author)).toBeInTheDocument()
   })
 
   it('makes the verified VK destination a noticeable community action', () => {

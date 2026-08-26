@@ -21,8 +21,10 @@ type CarouselAutoplayOptions = {
 type CarouselAutoplayState = {
   isReducedMotion: boolean
   isTemporarilyPaused: boolean
+  isStopped: boolean
   setHovered: (value: boolean) => void
   setFocused: (value: boolean) => void
+  stop: () => void
 }
 
 /** Shared autoplay behavior for editorial carousels with accessible escape hatches. */
@@ -34,24 +36,28 @@ export function useCarouselAutoplay({
   const prefersReducedMotion = useReducedMotion()
   const [isHovered, setIsHovered] = useState(false)
   const [isFocused, setIsFocused] = useState(false)
+  const [isStopped, setIsStopped] = useState(false)
   const onAdvanceRef = useRef(onAdvance)
+  const stop = useCallback(() => setIsStopped(true), [])
 
   useEffect(() => {
     onAdvanceRef.current = onAdvance
   }, [onAdvance])
 
   useEffect(() => {
-    if (prefersReducedMotion || isHovered || isFocused || itemCount < 2) return
+    if (prefersReducedMotion || isHovered || isFocused || isStopped || itemCount < 2) return
 
     const timer = window.setInterval(() => onAdvanceRef.current(), intervalMs)
     return () => window.clearInterval(timer)
-  }, [intervalMs, isFocused, isHovered, itemCount, prefersReducedMotion])
+  }, [intervalMs, isFocused, isHovered, isStopped, itemCount, prefersReducedMotion])
 
   return {
     isReducedMotion: Boolean(prefersReducedMotion),
     isTemporarilyPaused: isHovered || isFocused,
+    isStopped,
     setHovered: setIsHovered,
     setFocused: setIsFocused,
+    stop,
   }
 }
 
@@ -59,8 +65,16 @@ export function Carousel({ items, assetPath }: CarouselProps) {
   const [index, setIndex] = useState(0)
   const prefersReducedMotion = useReducedMotion()
   const active = items[index]
-  const go = useCallback((direction: number) => setIndex((current) => (current + direction + items.length) % items.length), [items.length])
-  const autoplay = useCarouselAutoplay({ itemCount: items.length, onAdvance: () => go(1) })
+  const advance = useCallback((direction: number) => setIndex((current) => (current + direction + items.length) % items.length), [items.length])
+  const autoplay = useCarouselAutoplay({ itemCount: items.length, onAdvance: () => advance(1) })
+  const go = useCallback((direction: number) => {
+    autoplay.stop()
+    advance(direction)
+  }, [advance, autoplay.stop])
+  const select = useCallback((nextIndex: number) => {
+    autoplay.stop()
+    setIndex(nextIndex)
+  }, [autoplay.stop])
   const pointerStart = useRef<{ x: number; y: number } | null>(null)
 
   if (!active) return null
@@ -88,7 +102,8 @@ export function Carousel({ items, assetPath }: CarouselProps) {
       role="region"
       aria-roledescription="карусель"
       aria-label="Сценарии вечера"
-      aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion ? 'off' : 'polite'}
+      aria-live={autoplay.isTemporarilyPaused || autoplay.isReducedMotion || autoplay.isStopped ? 'polite' : 'off'}
+      aria-describedby="event-carousel-help"
       tabIndex={0}
       onMouseEnter={() => autoplay.setHovered(true)}
       onMouseLeave={() => autoplay.setHovered(false)}
@@ -97,6 +112,7 @@ export function Carousel({ items, assetPath }: CarouselProps) {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) autoplay.setFocused(false)
       }}
     >
+      <p className="sr-only" id="event-carousel-help">Ручное переключение останавливает автоматическую смену событий.</p>
       <div className="event-carousel__stage">
         <AnimatePresence initial={false} mode="sync">
           <motion.div
@@ -130,7 +146,7 @@ export function Carousel({ items, assetPath }: CarouselProps) {
               onPointerUp={handlePointerUp}
               onPointerCancel={() => { pointerStart.current = null }}
             >
-              <img src={assetPath(active.media.assetKey)} alt={active.media.alt} />
+              <img src={assetPath(active.media.assetKey)} alt={active.media.alt} loading="lazy" decoding="async" />
               <span className="media-caption">концепция афиши</span>
             </div>
           </motion.div>
@@ -138,7 +154,7 @@ export function Carousel({ items, assetPath }: CarouselProps) {
       </div>
       <div className="event-carousel__controls">
         <div className="carousel-dots" aria-label="Выбор события">
-          {items.map((item, itemIndex) => <button key={item.id} type="button" className={itemIndex === index ? 'is-active' : ''} aria-label={`Показать ${item.title}`} aria-pressed={itemIndex === index} onClick={() => setIndex(itemIndex)} />)}
+          {items.map((item, itemIndex) => <button key={item.id} type="button" className={itemIndex === index ? 'is-active' : ''} aria-label={`Показать ${item.title}`} aria-pressed={itemIndex === index} onClick={() => select(itemIndex)} />)}
         </div>
         <div className="carousel-arrows">
           <button type="button" aria-label="Предыдущее событие" onClick={() => go(-1)}><ArrowLeft aria-hidden="true" /></button>
@@ -148,9 +164,9 @@ export function Carousel({ items, assetPath }: CarouselProps) {
       <div className="event-tickets">
         {items.filter((_, itemIndex) => itemIndex !== index).map((item) => (
           <TicketEdge tone="navy" className="event-ticket" key={item.id}>
-            <img src={assetPath(item.media.assetKey)} alt={`Превью события: ${item.title}`} />
+            <img src={assetPath(item.media.assetKey)} alt={`Превью события: ${item.title}`} loading="lazy" decoding="async" />
             <div><span>{item.dateLabel}</span><strong>{item.title}</strong></div>
-            <button type="button" onClick={() => setIndex(items.indexOf(item))} aria-label={`Открыть ${item.title}`}><ArrowRight aria-hidden="true" /></button>
+            <button type="button" onClick={() => select(items.indexOf(item))} aria-label={`Открыть ${item.title}`}><ArrowRight aria-hidden="true" /></button>
           </TicketEdge>
         ))}
       </div>

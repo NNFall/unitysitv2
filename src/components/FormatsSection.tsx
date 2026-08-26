@@ -21,7 +21,7 @@ export function FormatsSection({ content, assetPath }: { content: SiteContent; a
           const Icon = formatIcons[index]
           return (
             <article className={`format-card format-card--${index + 1}`} role="listitem" key={format.id}>
-              <div className="format-card__media"><img src={assetPath(format.media.assetKey)} alt={format.media.alt} /><span>{format.number}</span></div>
+              <div className="format-card__media"><img src={assetPath(format.media.assetKey)} alt={format.media.alt} loading="lazy" decoding="async" /><span>{format.number}</span></div>
               <div className="format-card__body">
                 <div className="format-card__heading"><p className="eyebrow">{format.kicker}</p><Icon aria-hidden="true" /></div>
                 <h3>{format.title}</h3>

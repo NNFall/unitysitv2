@@ -18,7 +18,16 @@ describe('Carousel', () => {
     await waitFor(() => expect(screen.getByRole('heading', { name: siteContent.events[1].title })).toBeInTheDocument())
   })
 
-  it('autoplays after the interval and exposes an explicit pause control', () => {
+  it('silences automatic changes and announces keyboard-controlled changes', () => {
+    render(<Carousel items={siteContent.events} assetPath={assetPath} />)
+    const region = screen.getByRole('region', { name: 'Сценарии вечера' })
+
+    expect(region).toHaveAttribute('aria-live', 'off')
+    fireEvent.focus(region)
+    expect(region).toHaveAttribute('aria-live', 'polite')
+  })
+
+  it('autoplays without exposing technical timing or pause controls', () => {
     vi.useFakeTimers()
     render(<Carousel items={siteContent.events} assetPath={assetPath} />)
 
@@ -42,6 +51,16 @@ describe('Carousel', () => {
 
     fireEvent.mouseLeave(region)
     act(() => vi.advanceTimersByTime(5600))
+    expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it('stops autoplay for the session after a manual selection', () => {
+    vi.useFakeTimers()
+    render(<Carousel items={siteContent.events} assetPath={assetPath} />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Следующее событие' }))
+    act(() => vi.advanceTimersByTime(5600))
+
     expect(screen.getByRole('button', { name: `Показать ${siteContent.events[1].title}` })).toHaveAttribute('aria-pressed', 'true')
   })
 

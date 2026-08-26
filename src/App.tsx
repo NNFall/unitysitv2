@@ -13,18 +13,18 @@ import './styles/global.css'
 const assetRoot = `${import.meta.env.BASE_URL}assets`
 
 export const assetPath = (key: string) => ({
-  hero: `${assetRoot}/editorial/unity-ai-hero-billiards-v3.png`,
-  entrance: `${assetRoot}/editorial/unity-ai-entrance-v2.png`,
+  hero: `${assetRoot}/editorial/unity-ai-hero-billiards-v3.webp`,
+  entrance: `${assetRoot}/venue/unity-yandex-01.jpg`,
   'community-hero': `${assetRoot}/venue/unity-yandex-03.jpg`,
-  'community-lounge': `${assetRoot}/editorial/unity-ai-community-group-v2.png`,
+  'community-lounge': `${assetRoot}/editorial/unity-ai-community-group-v2.webp`,
   'community-screen': `${assetRoot}/venue/unity-yandex-08.jpg`,
-  playstation: `${assetRoot}/editorial/unity-ai-gaming-v2.png`,
-  billiards: `${assetRoot}/editorial/unity-ai-billiards-v2.png`,
-  cinema: `${assetRoot}/editorial/unity-ai-cinema-v2.png`,
-  'board-games': `${assetRoot}/editorial/unity-ai-board-games-v2.png`,
-  'event-game-night': `${assetRoot}/editorial/unity-ai-event-gaming-v2.png`,
-  'event-movie-night': `${assetRoot}/editorial/unity-ai-event-movie-v2.png`,
-  'event-board-game': `${assetRoot}/editorial/unity-ai-event-board-v2.png`,
+  playstation: `${assetRoot}/editorial/unity-ai-gaming-v2.webp`,
+  billiards: `${assetRoot}/editorial/unity-ai-billiards-v2.webp`,
+  cinema: `${assetRoot}/editorial/unity-ai-cinema-v2.webp`,
+  'board-games': `${assetRoot}/editorial/unity-ai-board-games-v2.webp`,
+  'event-game-night': `${assetRoot}/editorial/unity-ai-event-gaming-v2.webp`,
+  'event-movie-night': `${assetRoot}/editorial/unity-ai-event-movie-v2.webp`,
+  'event-board-game': `${assetRoot}/editorial/unity-ai-event-board-v2.webp`,
 }[key] ?? `${assetRoot}/venue/unity-yandex-01.jpg`)
 
 function App() {
