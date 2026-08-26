@@ -461,8 +461,9 @@ h1 em, h2 em, h3 em { color: var(--orange); font-style: normal; }
   .event-feature__meta { margin: 0 0 1.15rem; }
   .event-feature__footer .button { width: 100%; }
   .event-carousel__controls { flex-wrap: wrap; justify-content: space-between; margin-top: 0.65rem; }
-  .event-tickets { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 0.35rem; }
-  .event-ticket { min-width: 86%; grid-template-columns: 88px minmax(0, 1fr) 44px; scroll-snap-align: start; }
+  .event-tickets { display: flex; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .event-tickets::-webkit-scrollbar { display: none; }
+  .event-ticket { min-width: 86%; grid-template-columns: 88px minmax(0, 1fr) 44px; scroll-snap-align: start; scroll-snap-stop: always; }
   .event-ticket img { width: 88px; }
   .event-ticket > div { min-width: 0; padding: 0.75rem 0.65rem; }
   .event-ticket > div strong { font-size: 1.35rem; overflow-wrap: anywhere; }
